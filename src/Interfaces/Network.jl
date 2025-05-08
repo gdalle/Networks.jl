@@ -288,3 +288,11 @@ checkeffect(graph, e::RemoveEdgeEffect, ::DontDelegate) = hasedge(graph, e.edge)
 handle!(graph, e::RemoveEdgeEffect) = handle!(graph, e, DelegatorTrait(Network(), graph))
 handle!(graph, e::RemoveEdgeEffect, ::DelegateTo) = handle!(delegator(Network(), graph), e)
 handle!(graph, e::RemoveEdgeEffect, ::DontDelegate) = nothing
+
+## `prune_edges!`
+function prune_edges!(graph)
+    for edge in edges_set_strand(graph)
+        rmedge!(graph, edge)
+    end
+    return graph
+end
