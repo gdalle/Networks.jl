@@ -29,7 +29,9 @@ struct PersistEdges <: EdgePersistenceTrait end
 struct RemoveEdges <: EdgePersistenceTrait end
 struct PruneEdges <: EdgePersistenceTrait end
 
-EdgePersistenceTrait(_) = PruneEdges()
+EdgePersistenceTrait(graph) = EdgePersistenceTrait(graph, DelegatorTrait(Network(), graph))
+EdgePersistenceTrait(graph, ::DelegateTo) = EdgePersistenceTrait(delegator(Network(), graph))
+EdgePersistenceTrait(graph, ::DontDelegate) = PruneEdges()
 
 # query methods
 function vertices end
