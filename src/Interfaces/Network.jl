@@ -61,11 +61,15 @@ function addvertex_inner! end
 function addedge_inner! end
 function rmvertex_inner! end
 function rmedge_inner! end
+function link_inner! end
+function unlink_inner! end
 
 function addvertex! end
 function addedge! end
 function rmvertex! end
 function rmedge! end
+function link! end
+function unlink! end
 
 # mutating methods with default implementation
 function prune_edges! end
@@ -105,6 +109,26 @@ end
 Represents the effect of removing an edge from a graph.
 """
 struct RemoveEdgeEffect{E} <: Effect
+    edge::E
+end
+
+"""
+    LinkEffect{F} <: Effect
+
+Represents the effect of linking a vertex to an edge in a graph.
+"""
+struct LinkEffect{V,E} <: Effect
+    vertex::V
+    edge::E
+end
+
+"""
+    UnlinkEffect{F} <: Effect
+
+Represents the effect of unlinking a vertex from an edge in a graph.
+"""
+struct UnlinkEffect{V,E} <: Effect
+    vertex::V
     edge::E
 end
 
@@ -241,6 +265,16 @@ rmedge_inner!(graph, e) = rmedge_inner!(graph, e, DelegatorTrait(Network(), grap
 rmedge_inner!(graph, e, ::DelegateTo) = rmedge_inner!(delegator(Network(), graph), e)
 rmedge_inner!(graph, e, ::DontDelegate) = throw(MethodError(rmedge_inner!, (graph, e)))
 
+## `link_inner!`
+link_inner!(graph, v, e) = link_inner!(graph, v, e, DelegatorTrait(Network(), graph))
+link_inner!(graph, v, e, ::DelegateTo) = link_inner!(delegator(Network(), graph), v, e)
+link_inner!(graph, v, e, ::DontDelegate) = throw(MethodError(link_inner!, (graph, v, e)))
+
+## `unlink_inner!`
+unlink_inner!(graph, v, e) = unlink_inner!(graph, v, e, DelegatorTrait(Network(), graph))
+unlink_inner!(graph, v, e, ::DelegateTo) = unlink_inner!(delegator(Network(), graph), v, e)
+unlink_inner!(graph, v, e, ::DontDelegate) = throw(MethodError(unlink_inner!, (graph, v, e)))
+
 ## `addvertex!`
 function addvertex!(graph, v)
     checkeffect(graph, AddVertexEffect(v))
@@ -339,6 +373,46 @@ checkeffect(graph, e::RemoveEdgeEffect, ::DontDelegate) = hasedge(graph, e.edge)
 handle!(graph, e::RemoveEdgeEffect) = handle!(graph, e, DelegatorTrait(Network(), graph))
 handle!(graph, e::RemoveEdgeEffect, ::DelegateTo) = handle!(delegator(Network(), graph), e)
 handle!(graph, e::RemoveEdgeEffect, ::DontDelegate) = nothing
+
+## `link!`
+function link!(graph, v, e)
+    checkeffect(graph, LinkEffect(e))
+    link_inner!(graph, v, e)
+    handle!(graph, LinkEffect(e))
+    return graph
+end
+
+checkeffect(graph, e::LinkEffect) = checkeffect(graph, e, DelegatorTrait(Network(), graph))
+checkeffect(graph, e::LinkEffect, ::DelegateTo) = checkeffect(delegator(Network(), graph), e)
+function checkeffect(graph, e::LinkEffect, ::DontDelegate)
+    hasvertex(graph, e.vertex) || throw(ArgumentError("Vertex $(e.vertex) not found in network"))
+    hasedge(graph, e.edge) || throw(ArgumentError("Edge $(e.edge) not found in network"))
+end
+
+# by default, do nothing because no extra mapping should be defined at this level
+handle!(graph, e::LinkEffect) = handle!(graph, e, DelegatorTrait(Network(), graph))
+handle!(graph, e::LinkEffect, ::DelegateTo) = handle!(delegator(Network(), graph), e)
+handle!(graph, e::LinkEffect, ::DontDelegate) = nothing
+
+## `unlink!`
+function unlink!(graph, v, e)
+    checkeffect(graph, UnlinkEffect(e))
+    unlink_inner!(graph, v, e)
+    handle!(graph, UnlinkEffect(e))
+    return graph
+end
+
+checkeffect(graph, e::UnlinkEffect) = checkeffect(graph, e, DelegatorTrait(Network(), graph))
+checkeffect(graph, e::UnlinkEffect, ::DelegateTo) = checkeffect(delegator(Network(), graph), e)
+function checkeffect(graph, e::UnlinkEffect, ::DontDelegate)
+    hasvertex(graph, e.vertex) || throw(ArgumentError("Vertex $(e.vertex) not found in network"))
+    hasedge(graph, e.edge) || throw(ArgumentError("Edge $(e.edge) not found in network"))
+end
+
+# by default, do nothing because no extra mapping should be defined at this level
+handle!(graph, e::UnlinkEffect) = handle!(graph, e, DelegatorTrait(Network(), graph))
+handle!(graph, e::UnlinkEffect, ::DelegateTo) = handle!(delegator(Network(), graph), e)
+handle!(graph, e::UnlinkEffect, ::DontDelegate) = nothing
 
 ## `prune_edges!`
 function prune_edges!(graph)
