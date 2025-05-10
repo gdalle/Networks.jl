@@ -104,3 +104,5 @@ Manifest-v*.toml
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+archive/
