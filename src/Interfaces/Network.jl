@@ -13,6 +13,24 @@ struct Edge{T} <: AbstractEdge
     id::T
 end
 
+# traits
+"""
+    EdgePersistenceTrait
+
+Trait for edge persitence in a [`Network`](@ref). It defines the behavior of edges when a vertex is removed.
+The following traits are defined:
+
+- `PersistEdges`: edges are **never** removed implicitly.
+- `RemoveEdges`: edges are **always** removed implicitly.
+- `PruneEdges` (default): edges are removed if left stranded (i.e. no other vertex is linked with it).
+"""
+abstract type EdgePersistenceTrait end
+struct PersistEdges <: EdgePersistenceTrait end
+struct RemoveEdges <: EdgePersistenceTrait end
+struct PruneEdges <: EdgePersistenceTrait end
+
+EdgePersistenceTrait(_) = PruneEdges()
+
 # query methods
 function vertices end
 function edges end
@@ -256,8 +274,39 @@ handle!(graph, e::AddEdgeEffect, ::DelegateTo) = handle!(delegator(Network(), gr
 handle!(graph, e::AddEdgeEffect, ::DontDelegate) = nothing
 
 ## `rmvertex!`
-function rmvertex!(graph, v)
+rmvertex!(graph, v) = rmvertex!(graph, v, EdgePersistenceTrait(graph))
+
+function rmvertex!(graph, v, ::PersistEdges)
     checkeffect(graph, RemoveVertexEffect(v))
+    rmvertex_inner!(graph, v)
+    handle!(graph, RemoveVertexEffect(v))
+    return graph
+end
+
+function rmvertex!(graph, v, ::RemoveEdges)
+    checkeffect(graph, RemoveVertexEffect(v))
+
+    # trait is to remove edges on vertex removal
+    for edge in vertex_incidents(graph, e.vertex)
+        rmedge!(graph, edge)
+    end
+
+    rmvertex_inner!(graph, v)
+    handle!(graph, RemoveVertexEffect(v))
+    return graph
+end
+
+function rmvertex!(graph, v, ::PruneEdges)
+    checkeffect(graph, RemoveVertexEffect(v))
+
+    # trait is to remove edges on vertex removal if that leaves them stranded
+    # (i.e. no open indices left)
+    for edge in vertex_incidents(graph, e.vertex)
+        if length(edge_incidents(graph, edge)) == 1
+            rmedge!(graph, edge)
+        end
+    end
+
     rmvertex_inner!(graph, v)
     handle!(graph, RemoveVertexEffect(v))
     return graph
