@@ -7,7 +7,7 @@ struct DelegateTo{T} <: DelegatorTrait end
 # by default, don't delegate
 DelegatorTrait(interface, x) = DontDelegate()
 
-delegator(interface, x) = delegator(interface, x, DelegatorTrait(x))
+delegator(interface, x) = delegator(interface, x, DelegatorTrait(interface, x))
 delegator(interface, x, ::DontDelegate) = throw(ArgumentError("Cannot delegate to $interface"))
 delegator(interface, x, ::DelegateTo{P}) where {P} = getproperty(x, P)
 
