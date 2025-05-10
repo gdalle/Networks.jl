@@ -303,7 +303,7 @@ function rmvertex!(graph, v, ::PruneEdges)
 
     # trait is to remove edges on vertex removal if that leaves them stranded
     # (i.e. no open indices left)
-    for edge in vertex_incidents(graph, e.vertex)
+    for edge in vertex_incidents(graph, v)
         if length(edge_incidents(graph, edge)) == 1
             rmedge!(graph, edge)
         end
