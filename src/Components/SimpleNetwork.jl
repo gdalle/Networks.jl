@@ -11,6 +11,7 @@ SimpleNetwork(vertexmap::Dict{V,Set{E}}, edgemap::Dict{E,Set{V}}) where {V,E} = 
 
 # Network implementation
 ImplementorTrait(::Network, graph::SimpleNetwork) = Implements()
+EdgePersistenceTrait(::SimpleNetwork) = PersistEdges()
 
 vertices(graph::SimpleNetwork) = keys(graph.vertexmap)
 edges(graph::SimpleNetwork) = keys(graph.edgemap)
