@@ -1,5 +1,0 @@
-[deps]
-Networks = "634dcf3f-6aa7-47ba-9e85-1fb329c9ebfe"
-
-[sources]
-Networks = {path = ".."}

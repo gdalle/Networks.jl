@@ -14,4 +14,7 @@ export edges_set_strand, edges_set_open, edges_set_hyper
 include("Components/SimpleNetwork.jl")
 export SimpleNetwork
 
+include("Components/AdjacencyNetwork.jl")
+export AdjacencyNetwork
+
 end # module Networks
