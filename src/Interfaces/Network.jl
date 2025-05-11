@@ -390,9 +390,9 @@ handle!(graph, e::RemoveEdgeEffect, ::DontDelegate) = nothing
 
 ## `link!`
 function link!(graph, v, e)
-    checkeffect(graph, LinkEffect(e))
+    checkeffect(graph, LinkEffect(v, e))
     link_inner!(graph, v, e)
-    handle!(graph, LinkEffect(e))
+    handle!(graph, LinkEffect(v, e))
     return graph
 end
 
@@ -410,9 +410,9 @@ handle!(graph, e::LinkEffect, ::DontDelegate) = nothing
 
 ## `unlink!`
 function unlink!(graph, v, e)
-    checkeffect(graph, UnlinkEffect(e))
+    checkeffect(graph, UnlinkEffect(v, e))
     unlink_inner!(graph, v, e)
-    handle!(graph, UnlinkEffect(e))
+    handle!(graph, UnlinkEffect(v, e))
     return graph
 end
 
