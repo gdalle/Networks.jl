@@ -20,9 +20,9 @@ end
 Trait for edge persitence in a [`Network`](@ref). It defines the behavior of edges when a vertex is removed.
 The following traits are defined:
 
-- `PersistEdges`: edges are **never** removed implicitly.
-- `RemoveEdges`: edges are **always** removed implicitly.
-- `PruneEdges` (default): edges are removed if left stranded (i.e. no other vertex is linked with it).
+  - `PersistEdges`: edges are **never** removed implicitly.
+  - `RemoveEdges`: edges are **always** removed implicitly.
+  - `PruneEdges` (default): edges are removed if left stranded (i.e. no other vertex is linked with it).
 """
 abstract type EdgePersistenceTrait end
 struct PersistEdges <: EdgePersistenceTrait end
@@ -76,7 +76,6 @@ function prune_edges! end
 
 # effects
 """
-
     AddVertexEffect{F} <: Effect
 
 Represents the effect of adding a vertex to a graph.
@@ -285,7 +284,9 @@ end
 
 checkeffect(graph, e::AddVertexEffect) = checkeffect(graph, e, DelegatorTrait(Network(), graph))
 checkeffect(graph, e::AddVertexEffect, ::DelegateTo) = checkeffect(delegator(Network(), graph), e)
-checkeffect(graph, e::AddVertexEffect, ::DontDelegate) = hasvertex(graph, e.vertex) && throw(ArgumentError("Vertex $(e.vertex) already exists in network"))
+function checkeffect(graph, e::AddVertexEffect, ::DontDelegate)
+    hasvertex(graph, e.vertex) && throw(ArgumentError("Vertex $(e.vertex) already exists in network"))
+end
 
 # by default, do nothing because no extra mapping should be defined at this level
 handle!(graph, e::AddVertexEffect) = handle!(graph, e, DelegatorTrait(Network(), graph))
@@ -302,7 +303,9 @@ end
 
 checkeffect(graph, e::AddEdgeEffect) = checkeffect(graph, e, DelegatorTrait(Network(), graph))
 checkeffect(graph, e::AddEdgeEffect, ::DelegateTo) = checkeffect(delegator(Network(), graph), e)
-checkeffect(graph, e::AddEdgeEffect, ::DontDelegate) = hasedge(graph, e.edge) && throw(ArgumentError("Edge $(e.edge) already exists in network"))
+function checkeffect(graph, e::AddEdgeEffect, ::DontDelegate)
+    hasedge(graph, e.edge) && throw(ArgumentError("Edge $(e.edge) already exists in network"))
+end
 
 # by default, do nothing because no extra mapping should be defined at this level
 handle!(graph, e::AddEdgeEffect) = handle!(graph, e, DelegatorTrait(Network(), graph))

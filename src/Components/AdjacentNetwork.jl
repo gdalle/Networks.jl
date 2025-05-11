@@ -53,9 +53,7 @@ Base.length(g::SimpleEdgeIter) = nedges(g.g)
 Base.IteratorEltype(::Type{<:SimpleEdgeIter}) = Base.HasEltype()
 Base.eltype(::Type{<:SimpleEdgeIter{T}}) where {T} = SimpleEdge{T}
 
-@inline function Base.iterate(
-    eit::SimpleEdgeIter{G}, state=(one(vertex_type(eit.g)), 1)
-) where {G}
+@inline function Base.iterate(eit::SimpleEdgeIter{G}, state=(one(vertex_type(eit.g)), 1)) where {G}
     g = eit.g
     T = vertex_type(g)
     n = T(nvertices(g))

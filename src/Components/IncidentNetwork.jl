@@ -7,7 +7,9 @@ struct IncidentNetwork{V,E} <: AbstractNetwork
     IncidentNetwork{V,E}(vertexmap, edgemap) where {V,E} = new{V,E}(copy(vertexmap), copy(edgemap))
 end
 
-IncidentNetwork(vertexmap::Dict{V,Set{E}}, edgemap::Dict{E,Set{V}}) where {V,E} = IncidentNetwork{V,E}(vertexmap, edgemap)
+function IncidentNetwork(vertexmap::Dict{V,Set{E}}, edgemap::Dict{E,Set{V}}) where {V,E}
+    IncidentNetwork{V,E}(vertexmap, edgemap)
+end
 
 function Base.copy(graph::IncidentNetwork{V,E}) where {V,E}
     vertexmap = Dict{V,Set{E}}(v => copy(es) for (v, es) in graph.vertexmap)

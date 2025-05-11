@@ -42,14 +42,8 @@ fixture = let
         edges_open=Set{Int}([15, 16, 17]),
         edges_hyper=Set{Int}([4]),
         vertex_strand=:j,
-        new_vertex=(;
-            vertex=:i,
-            edge_set=Set([15, 16, 17]),
-        ),
-        new_edge=(;
-            edge=10,
-            vertex_set=Set([:d, :g]),
-        ),
+        new_vertex=(; vertex=:i, edge_set=Set([15, 16, 17])),
+        new_edge=(; edge=10, vertex_set=Set([:d, :g])),
         delete_vertex=:h,
         delete_edge=3,
     )
@@ -91,7 +85,7 @@ Networks.EdgePersistenceTrait(::MockNetwork{V,E,EP}) where {V,E,EP} = EP()
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         @test issetequal(vertices(network), fixture.vertices)
     end
@@ -101,7 +95,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         @test issetequal(edges(network), fixture.edges)
     end
@@ -111,7 +105,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         for (edge, vertex_set) in fixture.edge_map
             @test issetequal(edge_incidents(network, edge), vertex_set)
@@ -123,7 +117,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         for (vertex, edge_set) in fixture.vertex_map
             @test issetequal(vertex_incidents(network, vertex), edge_set)
@@ -135,7 +129,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         @test vertex_type(network) === fixture.vertex_type
     end
@@ -145,7 +139,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         @test edge_type(network) === fixture.edge_type
     end
@@ -155,7 +149,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         for vertex in fixture.vertices
             @test hasvertex(network, vertex)
@@ -169,7 +163,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         for edge in fixture.edges
             @test hasedge(network, edge)
@@ -183,7 +177,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         @test nvertices(network) == length(fixture.vertices)
     end
@@ -193,7 +187,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         @test nedges(network) == length(fixture.edges)
     end
@@ -203,7 +197,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         @test issetequal(edges_set_strand(network), fixture.edges_strand)
     end
@@ -213,7 +207,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         @test issetequal(edges_set_open(network), fixture.edges_open)
     end
@@ -223,7 +217,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
         @test issetequal(edges_set_hyper(network), fixture.edges_hyper)
     end
@@ -233,7 +227,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
         WrapNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
-        MockNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
+        MockNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
     ]
         addvertex!(network, fixture.new_vertex.vertex)
         @test hasvertex(network, fixture.new_vertex.vertex)
@@ -247,7 +241,7 @@ end
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
         WrapNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
-        MockNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
+        MockNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
     ]
         # TODO
 
@@ -340,7 +334,9 @@ end
         @testset "trait = PersistEdges" begin
             # test stranded vertex removal
             @testset let fixture = deepcopy(fixture)
-                network = MockNetwork(IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PersistEdges())
+                network = MockNetwork(
+                    IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PersistEdges()
+                )
 
                 # test vertex removal
                 @test hasvertex(network, fixture.vertex_strand)
@@ -358,7 +354,9 @@ end
 
             # test regular vertex removal
             @testset let fixture = deepcopy(fixture)
-                network = MockNetwork(IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PersistEdges())
+                network = MockNetwork(
+                    IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PersistEdges()
+                )
 
                 # test vertex removal
                 @test hasvertex(network, fixture.delete_vertex)
@@ -378,7 +376,9 @@ end
         @testset "trait = RemoveEdges" begin
             # test stranded vertex removal
             @testset let fixture = deepcopy(fixture)
-                network = MockNetwork(IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.RemoveEdges())
+                network = MockNetwork(
+                    IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.RemoveEdges()
+                )
 
                 # test vertex removal
                 @test hasvertex(network, fixture.vertex_strand)
@@ -396,7 +396,9 @@ end
 
             # test regular vertex removal
             @testset let fixture = deepcopy(fixture)
-                network = MockNetwork(IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.RemoveEdges())
+                network = MockNetwork(
+                    IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.RemoveEdges()
+                )
 
                 # test vertex removal
                 @test hasvertex(network, fixture.delete_vertex)
@@ -420,7 +422,9 @@ end
         @testset "trait = PruneEdges" begin
             # test stranded vertex removal
             @testset let fixture = deepcopy(fixture)
-                network = MockNetwork(IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PruneEdges())
+                network = MockNetwork(
+                    IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PruneEdges()
+                )
 
                 # test vertex removal
                 @test hasvertex(network, fixture.vertex_strand)
@@ -438,7 +442,9 @@ end
 
             # test regular vertex removal
             @testset let fixture = deepcopy(fixture)
-                network = MockNetwork(IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PruneEdges())
+                network = MockNetwork(
+                    IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PruneEdges()
+                )
 
                 # test vertex removal
                 @test hasvertex(network, fixture.delete_vertex)
