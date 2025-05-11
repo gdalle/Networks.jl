@@ -315,6 +315,11 @@ rmvertex!(graph, v) = rmvertex!(graph, v, EdgePersistenceTrait(graph))
 function rmvertex!(graph, v, ::PersistEdges)
     checkeffect(graph, RemoveVertexEffect(v))
     rmvertex_inner!(graph, v)
+
+    # TODO call `unlink!` on the vertex-edge?
+    # - needed for incidence matrix-implementations
+    # - adjacency matrix-implementations cannot process `unlink!` because overlaps with `rmedge!`
+
     handle!(graph, RemoveVertexEffect(v))
     return graph
 end
@@ -323,7 +328,7 @@ function rmvertex!(graph, v, ::RemoveEdges)
     checkeffect(graph, RemoveVertexEffect(v))
 
     # trait is to remove edges on vertex removal
-    for edge in vertex_incidents(graph, e.vertex)
+    for edge in vertex_incidents(graph, v)
         rmedge!(graph, edge)
     end
 
@@ -343,6 +348,10 @@ function rmvertex!(graph, v, ::PruneEdges)
         end
     end
 
+    # TODO call `unlink!` on the vertex-edge?
+    # - needed for incidence matrix-implementations
+    # - adjacency matrix-implementations cannot process `unlink!` because overlaps with `rmedge!`
+
     rmvertex_inner!(graph, v)
     handle!(graph, RemoveVertexEffect(v))
     return graph
@@ -350,7 +359,9 @@ end
 
 checkeffect(graph, e::RemoveVertexEffect) = checkeffect(graph, e, DelegatorTrait(Network(), graph))
 checkeffect(graph, e::RemoveVertexEffect, ::DelegateTo) = checkeffect(delegator(Network(), graph), e)
-checkeffect(graph, e::RemoveVertexEffect, ::DontDelegate) = hasvertex(graph, e.vertex) || throw(ArgumentError("Vertex $(e.vertex) not found in network"))
+function checkeffect(graph, e::RemoveVertexEffect, ::DontDelegate)
+    hasvertex(graph, e.vertex) || throw(ArgumentError("Vertex $(e.vertex) not found in network"))
+end
 
 # by default, do nothing because no extra mapping should be defined at this level
 handle!(graph, e::RemoveVertexEffect) = handle!(graph, e, DelegatorTrait(Network(), graph))
@@ -360,6 +371,7 @@ handle!(graph, e::RemoveVertexEffect, ::DontDelegate) = nothing
 ## `rmedge!`
 function rmedge!(graph, e)
     checkeffect(graph, RemoveEdgeEffect(e))
+    # TODO call `unlink!` on the edge?
     rmedge_inner!(graph, e)
     handle!(graph, RemoveEdgeEffect(e))
     return graph
@@ -367,7 +379,9 @@ end
 
 checkeffect(graph, e::RemoveEdgeEffect) = checkeffect(graph, e, DelegatorTrait(Network(), graph))
 checkeffect(graph, e::RemoveEdgeEffect, ::DelegateTo) = checkeffect(delegator(Network(), graph), e)
-checkeffect(graph, e::RemoveEdgeEffect, ::DontDelegate) = hasedge(graph, e.edge) || throw(ArgumentError("Edge $(e.edge) not found in network"))
+function checkeffect(graph, e::RemoveEdgeEffect, ::DontDelegate)
+    hasedge(graph, e.edge) || throw(ArgumentError("Edge $(e.edge) not found in network"))
+end
 
 # by default, do nothing because no extra mapping should be defined at this level
 handle!(graph, e::RemoveEdgeEffect) = handle!(graph, e, DelegatorTrait(Network(), graph))

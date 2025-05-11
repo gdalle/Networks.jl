@@ -66,13 +66,14 @@ function addvertex_inner!(graph::SimpleNetwork{V,E}, vertex) where {V,E}
 end
 
 function rmvertex_inner!(graph::SimpleNetwork, vertex)
-    hasvertex(graph, vertex) || throw(ArgumentError("Vertex $vertex does not exist in the graph."))
-    isempty(vertex_incidents(graph, vertex)) || throw(ArgumentError("Vertex $vertex is incident to edges. Remove edges first."))
+    # isempty(vertex_incidents(graph, vertex)) || throw(ArgumentError("Vertex $vertex is incident to edges. Remove edges first."))
 
-    # for edge in vertex_incidents(graph, vertex)
-    #     unlink!(graph, vertex, edge)
-    # end
+    # unlink vertex-edge pairs
+    for edge in vertex_incidents(graph, vertex)
+        unlink_inner!(graph, vertex, edge)
+    end
 
+    # remove vertex
     delete!(graph.vertexmap, vertex)
     return graph
 end
@@ -84,14 +85,24 @@ function addedge_inner!(graph::SimpleNetwork{V,E}, edge) where {V,E}
 end
 
 function rmedge_inner!(graph::SimpleNetwork, edge)
-    hasedge(graph, edge) || throw(ArgumentError("Edge $edge does not exist in the graph."))
-    isempty(edge_incidents(graph, edge)) || throw(ArgumentError("Edge $edge is incident to vertices. Remove vertices first."))
+    # isempty(edge_incidents(graph, edge)) || throw(ArgumentError("Edge $edge is incident to vertices. Remove vertices first."))
 
-    # for vertex in edge_incidents(graph, edge)
-    #     unlink!(graph, vertex, edge)
-    # end
+    # unlink edge-vertex pairs
+    for vertex in edge_incidents(graph, edge)
+        unlink_inner!(graph, vertex, edge)
+    end
 
+    # remove edge
     delete!(graph.edgemap, edge)
     return graph
 end
 
+function link_inner!(graph::SimpleNetwork, vertex, edge)
+    push!(graph.vertexmap[vertex], edge)
+    push!(graph.edgemap[edge], vertex)
+end
+
+function unlink_inner!(graph::SimpleNetwork, vertex, edge)
+    delete!(graph.vertexmap[vertex], edge)
+    delete!(graph.edgemap[edge], vertex)
+end
