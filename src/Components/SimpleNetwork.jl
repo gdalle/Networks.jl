@@ -9,6 +9,12 @@ end
 
 SimpleNetwork(vertexmap::Dict{V,Set{E}}, edgemap::Dict{E,Set{V}}) where {V,E} = SimpleNetwork{V,E}(vertexmap, edgemap)
 
+function Base.copy(graph::SimpleNetwork{V,E}) where {V,E}
+    vertexmap = Dict{V,Set{E}}(v => copy(es) for (v, es) in graph.vertexmap)
+    edgemap = Dict{E,Set{V}}(e => copy(vs) for (e, vs) in graph.edgemap)
+    return SimpleNetwork{V,E}(vertexmap, edgemap)
+end
+
 # Network implementation
 ImplementorTrait(::Network, graph::SimpleNetwork) = Implements()
 EdgePersistenceTrait(::SimpleNetwork) = PersistEdges()

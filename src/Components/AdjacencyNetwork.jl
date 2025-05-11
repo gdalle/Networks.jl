@@ -16,6 +16,8 @@ struct AdjacencyNetwork{T<:Integer} <: AbstractNetwork
     ne::Int
 end
 
+Base.copy(g::AdjacencyNetwork) = AdjacencyNetwork(copy.(g.fadjlist), g.ne)
+
 Implements(::Network, ::AdjacencyNetwork) = Implements()
 EdgePersistenceTrait(::AdjacencyNetwork) = RemoveEdges()
 
