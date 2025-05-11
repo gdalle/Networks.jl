@@ -471,5 +471,33 @@ end
 end
 
 @testset "rmedge!" begin
-    # TODO
+    @testset "SimpleNetwork" begin
+        # test regular edge removal
+        @testset let fixture = deepcopy(fixture)
+            network = SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
+
+            # test edge removal
+            @test hasedge(network, fixture.delete_edge)
+            rmedge!(network, fixture.delete_edge)
+            @test !hasedge(network, fixture.delete_edge)
+
+            # edge does not exist anymore so it should throw an error
+            @test_throws ArgumentError rmedge!(network, fixture.delete_edge)
+        end
+    end
+
+    @testset "WrapNetwork{SimpleNetwork}" begin
+        # test regular edge removal
+        @testset let fixture = deepcopy(fixture)
+            network = WrapNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
+
+            # test edge removal
+            @test hasedge(network, fixture.delete_edge)
+            rmedge!(network, fixture.delete_edge)
+            @test !hasedge(network, fixture.delete_edge)
+
+            # edge does not exist anymore so it should throw an error
+            @test_throws ArgumentError rmedge!(network, fixture.delete_edge)
+        end
+    end
 end
