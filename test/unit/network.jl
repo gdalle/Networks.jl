@@ -50,7 +50,7 @@ fixture = let
             edge=10,
             vertex_set=Set([:d, :g]),
         ),
-        delete_vertex=:b,
+        delete_vertex=:h,
         delete_edge=3,
     )
 end
