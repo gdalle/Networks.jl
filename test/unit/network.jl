@@ -2,7 +2,7 @@ using Test
 using Networks
 
 # testing fixtures
-const fixture = let
+fixture = let
     vm = Dict(
         :a => Set([1, 2]),
         :b => Set([1, 3, 4, 5]),
@@ -50,6 +50,8 @@ const fixture = let
             edge=10,
             vertex_set=Set([:d, :g]),
         ),
+        delete_vertex=:b,
+        delete_edge=3,
     )
 end
 
@@ -62,11 +64,13 @@ WrapNetwork(v, e) = WrapNetwork(SimpleNetwork(v, e))
 Networks.DelegatorTrait(::Networks.Network, ::WrapNetwork) = Networks.DelegateTo{:g}()
 
 # mocks a network to test default implementations of optional methods
-struct MockNetwork{V,E}
+struct MockNetwork{V,E,EdgePersistence<:Networks.EdgePersistenceTrait}
     g::SimpleNetwork{V,E}
 end
 
 MockNetwork(v::V, e::E) where {V,E} = MockNetwork(SimpleNetwork(v, e))
+MockNetwork(g::SimpleNetwork{V,E}, ::EP) where {V,E,EP<:Networks.EdgePersistenceTrait} = MockNetwork{V,E,EP}(g)
+MockNetwork(g::SimpleNetwork) = MockNetwork(g, Networks.EdgePersistenceTrait(g))
 
 Networks.ImplementorTrait(::Networks.Network, ::MockNetwork) = Networks.Implements()
 Networks.vertices(g::MockNetwork) = vertices(g.g)
@@ -81,7 +85,9 @@ Networks.rmvertex_inner!(g::MockNetwork, vertex) = rmvertex!(g.g, vertex)
 Networks.addedge_inner!(g::MockNetwork, edge, vertex_set) = addedge!(g.g, edge, vertex_set)
 Networks.rmedge_inner!(g::MockNetwork, edge) = rmedge!(g.g, edge)
 
-@testset "vertices" begin
+Networks.EdgePersistenceTrait(::MockNetwork{V,E,EP}) where {V,E,EP} = EP()
+
+@testset"vertices" begin
     @testset "$(typeof(network))" for network in [
         SimpleNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
@@ -225,9 +231,9 @@ end
 
 @testset "addvertex!" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
-        WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
+        WrapNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
+        MockNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
     ]
         addvertex!(network, fixture.new_vertex.vertex)
         @test hasvertex(network, fixture.new_vertex.vertex)
@@ -239,9 +245,9 @@ end
 
 @testset "addedge!" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
-        WrapNetwork(fixture.vertex_map, fixture.edge_map),
-        MockNetwork(fixture.vertex_map, fixture.edge_map)
+        SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
+        WrapNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
+        MockNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
     ]
         # TODO
 
@@ -255,36 +261,211 @@ end
 
 @testset "rmvertex!" begin
     @testset "SimpleNetwork" begin
-        network = SimpleNetwork(fixture.vertex_map, fixture.edge_map)
+        # test stranded vertex removal
+        @testset let fixture = deepcopy(fixture)
+            network = SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
 
-        # test vertex removal
-        @test hasvertex(network, fixture.vertex_strand)
-        rmvertex!(network, fixture.vertex_strand)
-        @test !hasvertex(network, fixture.vertex_strand)
+            # test vertex removal
+            @test hasvertex(network, fixture.vertex_strand)
+            rmvertex!(network, fixture.vertex_strand)
+            @test !hasvertex(network, fixture.vertex_strand)
 
-        # vertex does not exist anymore so it should throw an error
-        @test_throws ArgumentError rmvertex!(network, fixture.vertex_strand)
+            # vertex does not exist anymore so it should throw an error
+            @test_throws ArgumentError rmvertex!(network, fixture.vertex_strand)
 
-        # `SimpleNetwork` has `PersistEdges` trait
-        for edge in fixture.edges
-            @test hasedge(network, edge)
+            # `SimpleNetwork` has `PersistEdges` trait
+            @test all(fixture.edges) do edge
+                hasedge(network, edge)
+            end
+        end
+
+        # test regular vertex removal
+        @testset let fixture = deepcopy(fixture)
+            network = SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
+
+            # test vertex removal
+            @test hasvertex(network, fixture.delete_vertex)
+            rmvertex!(network, fixture.delete_vertex)
+            @test !hasvertex(network, fixture.delete_vertex)
+
+            # vertex does not exist anymore so it should throw an error
+            @test_throws ArgumentError rmvertex!(network, fixture.delete_vertex)
+
+            # `SimpleNetwork` has `PersistEdges` trait
+            @test all(fixture.edges) do edge
+                hasedge(network, edge)
+            end
         end
     end
 
     @testset "WrapNetwork{SimpleNetwork}" begin
-        network = WrapNetwork(fixture.vertex_map, fixture.edge_map)
+        # test stranded vertex removal
+        @testset let fixture = deepcopy(fixture)
+            network = WrapNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
 
-        # test vertex removal
-        @test hasvertex(network, fixture.vertex_strand)
-        rmvertex!(network, fixture.vertex_strand)
-        @test !hasvertex(network, fixture.vertex_strand)
+            # test vertex removal
+            @test hasvertex(network, fixture.vertex_strand)
+            rmvertex!(network, fixture.vertex_strand)
+            @test !hasvertex(network, fixture.vertex_strand)
 
-        # vertex does not exist anymore so it should throw an error
-        @test_throws ArgumentError rmvertex!(network, fixture.vertex_strand)
+            # vertex does not exist anymore so it should throw an error
+            @test_throws ArgumentError rmvertex!(network, fixture.vertex_strand)
 
-        # `WrapNetwork{SimpleNetwork}` has `PersistEdges` trait
-        for edge in fixture.edges
-            @test hasedge(network, edge)
+            # `WrapNetwork{SimpleNetwork}` has `PersistEdges` trait
+            @test all(fixture.edges) do edge
+                hasedge(network, edge)
+            end
+        end
+
+        # test regular vertex removal
+        @testset let fixture = deepcopy(fixture)
+            network = WrapNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
+
+            # test vertex removal
+            @test hasvertex(network, fixture.delete_vertex)
+            rmvertex!(network, fixture.delete_vertex)
+            @test !hasvertex(network, fixture.delete_vertex)
+
+            # vertex does not exist anymore so it should throw an error
+            @test_throws ArgumentError rmvertex!(network, fixture.delete_vertex)
+
+            # `WrapNetwork{SimpleNetwork}` has `PersistEdges` trait
+            @test all(fixture.edges) do edge
+                hasedge(network, edge)
+            end
+        end
+    end
+
+    @testset "MockNetwork" begin
+        @testset "trait = PersistEdges" begin
+            # test stranded vertex removal
+            @testset let fixture = deepcopy(fixture)
+                network = MockNetwork(SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PersistEdges())
+
+                # test vertex removal
+                @test hasvertex(network, fixture.vertex_strand)
+                rmvertex!(network, fixture.vertex_strand)
+                @test !hasvertex(network, fixture.vertex_strand)
+
+                # vertex does not exist anymore so it should throw an error
+                @test_throws ArgumentError rmvertex!(network, fixture.vertex_strand)
+
+                # `PersistEdges` trait: edges are not removed on vertex removal
+                @test all(fixture.edges) do edge
+                    hasedge(network, edge)
+                end
+            end
+
+            # test regular vertex removal
+            @testset let fixture = deepcopy(fixture)
+                network = MockNetwork(SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PersistEdges())
+
+                # test vertex removal
+                @test hasvertex(network, fixture.delete_vertex)
+                rmvertex!(network, fixture.delete_vertex)
+                @test !hasvertex(network, fixture.delete_vertex)
+
+                # vertex does not exist anymore so it should throw an error
+                @test_throws ArgumentError rmvertex!(network, fixture.delete_vertex)
+
+                # `PersistEdges` trait: edges are not removed on vertex removal
+                @test all(fixture.edges) do edge
+                    hasedge(network, edge)
+                end
+            end
+        end
+
+        @testset "trait = RemoveEdges" begin
+            # test stranded vertex removal
+            @testset let fixture = deepcopy(fixture)
+                network = MockNetwork(SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.RemoveEdges())
+
+                # test vertex removal
+                @test hasvertex(network, fixture.vertex_strand)
+                rmvertex!(network, fixture.vertex_strand)
+                @test !hasvertex(network, fixture.vertex_strand)
+
+                # vertex does not exist anymore so it should throw an error
+                @test_throws ArgumentError rmvertex!(network, fixture.vertex_strand)
+
+                # `RemoveEdges` trait: edges are removed on vertex removal
+                @test all(fixture.edges) do edge
+                    hasedge(network, edge)
+                end
+            end
+
+            # test regular vertex removal
+            @testset let fixture = deepcopy(fixture)
+                network = MockNetwork(SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.RemoveEdges())
+
+                # test vertex removal
+                @test hasvertex(network, fixture.delete_vertex)
+                rmvertex!(network, fixture.delete_vertex)
+                @test !hasvertex(network, fixture.delete_vertex)
+
+                # vertex does not exist anymore so it should throw an error
+                @test_throws ArgumentError rmvertex!(network, fixture.delete_vertex)
+
+                # `RemoveEdges` trait: edges are removed on vertex removal
+                @test all(fixture.vertex_map[fixture.delete_vertex]) do edge
+                    !hasedge(network, edge)
+                end
+
+                @test all(setdiff(fixture.edges, fixture.vertex_map[fixture.delete_vertex])) do edge
+                    hasedge(network, edge)
+                end
+            end
+        end
+
+        @testset "trait = PruneEdges" begin
+            # test stranded vertex removal
+            @testset let fixture = deepcopy(fixture)
+                network = MockNetwork(SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PruneEdges())
+
+                # test vertex removal
+                @test hasvertex(network, fixture.vertex_strand)
+                rmvertex!(network, fixture.vertex_strand)
+                @test !hasvertex(network, fixture.vertex_strand)
+
+                # vertex does not exist anymore so it should throw an error
+                @test_throws ArgumentError rmvertex!(network, fixture.vertex_strand)
+
+                # `PruneEdges` trait: edges are removed on vertex removal
+                @test all(fixture.edges) do edge
+                    hasedge(network, edge)
+                end
+            end
+
+            # test regular vertex removal
+            @testset let fixture = deepcopy(fixture)
+                network = MockNetwork(SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PruneEdges())
+
+                # test vertex removal
+                @test hasvertex(network, fixture.delete_vertex)
+                rmvertex!(network, fixture.delete_vertex)
+                @test !hasvertex(network, fixture.delete_vertex)
+
+                # vertex does not exist anymore so it should throw an error
+                @test_throws ArgumentError rmvertex!(network, fixture.delete_vertex)
+
+                # `PruneEdges` trait: edges are removed on vertex removal
+                @test isempty(edges_set_strand(network))
+
+                tested_stranded = false
+                for edge in fixture.vertex_map[fixture.delete_vertex]
+                    cardinality = length(fixture.edge_map[edge])
+                    if cardinality == 1
+                        @test !hasedge(network, edge)
+                        tested_stranded = true
+                    else
+                        @test hasedge(network, edge)
+                    end
+                end
+
+                if !tested_stranded
+                    @warn "Vertex removed on test cannot be stranded"
+                end
+            end
         end
     end
 end
