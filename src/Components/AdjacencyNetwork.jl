@@ -6,45 +6,45 @@ struct SimpleEdge{T} <: AbstractEdge
 end
 
 """
-    AdjacencyNetwork <: AbstractNetwork
+    AdjacentNetwork <: AbstractNetwork
 
 A network represented as an adjacency list.
 It is the translation of `SimpleGraph` from Graphs.jl to the [`Network`](@ref) interface.
 """
-struct AdjacencyNetwork{T<:Integer} <: AbstractNetwork
+struct AdjacentNetwork{T<:Integer} <: AbstractNetwork
     fadjlist::Vector{Vector{T}}
     ne::Int
 end
 
-Base.copy(g::AdjacencyNetwork) = AdjacencyNetwork(copy.(g.fadjlist), g.ne)
+Base.copy(g::AdjacentNetwork) = AdjacentNetwork(copy.(g.fadjlist), g.ne)
 
-Implements(::Network, ::AdjacencyNetwork) = Implements()
-EdgePersistenceTrait(::AdjacencyNetwork) = RemoveEdges()
+Implements(::Network, ::AdjacentNetwork) = Implements()
+EdgePersistenceTrait(::AdjacentNetwork) = RemoveEdges()
 
-vertices(g::AdjacencyNetwork) = 1:length(g.fadjlist)
-edges(g::AdjacencyNetwork) = SimpleEdgeIter(g)
+vertices(g::AdjacentNetwork) = 1:length(g.fadjlist)
+edges(g::AdjacentNetwork) = SimpleEdgeIter(g)
 
-edge_incidents(g::AdjacencyNetwork, e::SimpleEdge) = [e.v1, e.v2]
-vertex_incidents(g::AdjacencyNetwork, v) = g.fadjlist[v]
+edge_incidents(g::AdjacentNetwork, e::SimpleEdge) = [e.v1, e.v2]
+vertex_incidents(g::AdjacentNetwork, v) = g.fadjlist[v]
 
-vertex_type(g::AdjacencyNetwork{T}) where {T} = T
-edge_type(g::AdjacencyNetwork{T}) where {T} = SimpleEdge{T}
+vertex_type(g::AdjacentNetwork{T}) where {T} = T
+edge_type(g::AdjacentNetwork{T}) where {T} = SimpleEdge{T}
 
-hasvertex(g::AdjacencyNetwork, v) = 1 <= v <= length(g.fadjlist)
-hasedge(g::AdjacencyNetwork, e::SimpleEdge) = e.v2 ∈ g.fadjlist[e.v1]
+hasvertex(g::AdjacentNetwork, v) = 1 <= v <= length(g.fadjlist)
+hasedge(g::AdjacentNetwork, e::SimpleEdge) = e.v2 ∈ g.fadjlist[e.v1]
 
-nvertices(g::AdjacencyNetwork) = length(g.fadjlist)
-nedges(g::AdjacencyNetwork) = g.ne
+nvertices(g::AdjacentNetwork) = length(g.fadjlist)
+nedges(g::AdjacentNetwork) = g.ne
 
-edges_set_strand(::AdjacencyNetwork{T}) where {T} = SimpleEdge{T}[]
-edges_set_open(::AdjacencyNetwork{T}) where {T} = SimpleEdge{T}[]
-edges_set_hyper(::AdjacencyNetwork{T}) where {T} = SimpleEdge{T}[]
+edges_set_strand(::AdjacentNetwork{T}) where {T} = SimpleEdge{T}[]
+edges_set_open(::AdjacentNetwork{T}) where {T} = SimpleEdge{T}[]
+edges_set_hyper(::AdjacentNetwork{T}) where {T} = SimpleEdge{T}[]
 
-Base.@propagate_inbounds fadj(g::AdjacencyNetwork) = g.fadjlist
-Base.@propagate_inbounds fadj(g::AdjacencyNetwork, u) = g.fadjlist[u]
+Base.@propagate_inbounds fadj(g::AdjacentNetwork) = g.fadjlist
+Base.@propagate_inbounds fadj(g::AdjacentNetwork, u) = g.fadjlist[u]
 
 struct SimpleEdgeIter{T}
-    g::AdjacencyNetwork{T}
+    g::AdjacentNetwork{T}
 end
 
 Base.IteratorSize(::Type{<:SimpleEdgeIter}) = Base.HasLength()

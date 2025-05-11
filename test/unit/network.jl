@@ -60,17 +60,17 @@ struct WrapNetwork{G}
     g::G
 end
 
-WrapNetwork(v, e) = WrapNetwork(SimpleNetwork(v, e))
+WrapNetwork(v, e) = WrapNetwork(IncidentNetwork(v, e))
 Networks.DelegatorTrait(::Networks.Network, ::WrapNetwork) = Networks.DelegateTo{:g}()
 
 # mocks a network to test default implementations of optional methods
 struct MockNetwork{V,E,EdgePersistence<:Networks.EdgePersistenceTrait}
-    g::SimpleNetwork{V,E}
+    g::IncidentNetwork{V,E}
 end
 
-MockNetwork(v::V, e::E) where {V,E} = MockNetwork(SimpleNetwork(v, e))
-MockNetwork(g::SimpleNetwork{V,E}, ::EP) where {V,E,EP<:Networks.EdgePersistenceTrait} = MockNetwork{V,E,EP}(g)
-MockNetwork(g::SimpleNetwork) = MockNetwork(g, Networks.EdgePersistenceTrait(g))
+MockNetwork(v::V, e::E) where {V,E} = MockNetwork(IncidentNetwork(v, e))
+MockNetwork(g::IncidentNetwork{V,E}, ::EP) where {V,E,EP<:Networks.EdgePersistenceTrait} = MockNetwork{V,E,EP}(g)
+MockNetwork(g::IncidentNetwork) = MockNetwork(g, Networks.EdgePersistenceTrait(g))
 
 Networks.ImplementorTrait(::Networks.Network, ::MockNetwork) = Networks.Implements()
 Networks.vertices(g::MockNetwork) = vertices(g.g)
@@ -89,7 +89,7 @@ Networks.EdgePersistenceTrait(::MockNetwork{V,E,EP}) where {V,E,EP} = EP()
 
 @testset"vertices" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -99,7 +99,7 @@ end
 
 @testset "edges" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -109,7 +109,7 @@ end
 
 @testset "edge_incidents" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -121,7 +121,7 @@ end
 
 @testset "vertex_incidents" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -133,7 +133,7 @@ end
 
 @testset "vertex_type" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -143,7 +143,7 @@ end
 
 @testset "edge_type" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -153,7 +153,7 @@ end
 
 @testset "hasvertex" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -167,7 +167,7 @@ end
 
 @testset "hasedge" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -181,7 +181,7 @@ end
 
 @testset "nvertices" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -191,7 +191,7 @@ end
 
 @testset "nedges" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -201,7 +201,7 @@ end
 
 @testset "edges_set_strand" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -211,7 +211,7 @@ end
 
 @testset "edges_set_open" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -221,7 +221,7 @@ end
 
 @testset "edges_set_hyper" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(fixture.vertex_map, fixture.edge_map),
+        IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map)
     ]
@@ -231,7 +231,7 @@ end
 
 @testset "addvertex!" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
+        IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
         WrapNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
         MockNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
     ]
@@ -245,7 +245,7 @@ end
 
 @testset "addedge!" begin
     @testset "$(typeof(network))" for network in [
-        SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
+        IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
         WrapNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)),
         MockNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
     ]
@@ -260,10 +260,10 @@ end
 end
 
 @testset "rmvertex!" begin
-    @testset "SimpleNetwork" begin
+    @testset "IncidentNetwork" begin
         # test stranded vertex removal
         @testset let fixture = deepcopy(fixture)
-            network = SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
+            network = IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
 
             # test vertex removal
             @test hasvertex(network, fixture.vertex_strand)
@@ -273,7 +273,7 @@ end
             # vertex does not exist anymore so it should throw an error
             @test_throws ArgumentError rmvertex!(network, fixture.vertex_strand)
 
-            # `SimpleNetwork` has `PersistEdges` trait
+            # `IncidentNetwork` has `PersistEdges` trait
             @test all(fixture.edges) do edge
                 hasedge(network, edge)
             end
@@ -281,7 +281,7 @@ end
 
         # test regular vertex removal
         @testset let fixture = deepcopy(fixture)
-            network = SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
+            network = IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
 
             # test vertex removal
             @test hasvertex(network, fixture.delete_vertex)
@@ -291,14 +291,14 @@ end
             # vertex does not exist anymore so it should throw an error
             @test_throws ArgumentError rmvertex!(network, fixture.delete_vertex)
 
-            # `SimpleNetwork` has `PersistEdges` trait
+            # `IncidentNetwork` has `PersistEdges` trait
             @test all(fixture.edges) do edge
                 hasedge(network, edge)
             end
         end
     end
 
-    @testset "WrapNetwork{SimpleNetwork}" begin
+    @testset "WrapNetwork{IncidentNetwork}" begin
         # test stranded vertex removal
         @testset let fixture = deepcopy(fixture)
             network = WrapNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
@@ -311,7 +311,7 @@ end
             # vertex does not exist anymore so it should throw an error
             @test_throws ArgumentError rmvertex!(network, fixture.vertex_strand)
 
-            # `WrapNetwork{SimpleNetwork}` has `PersistEdges` trait
+            # `WrapNetwork{IncidentNetwork}` has `PersistEdges` trait
             @test all(fixture.edges) do edge
                 hasedge(network, edge)
             end
@@ -329,7 +329,7 @@ end
             # vertex does not exist anymore so it should throw an error
             @test_throws ArgumentError rmvertex!(network, fixture.delete_vertex)
 
-            # `WrapNetwork{SimpleNetwork}` has `PersistEdges` trait
+            # `WrapNetwork{IncidentNetwork}` has `PersistEdges` trait
             @test all(fixture.edges) do edge
                 hasedge(network, edge)
             end
@@ -340,7 +340,7 @@ end
         @testset "trait = PersistEdges" begin
             # test stranded vertex removal
             @testset let fixture = deepcopy(fixture)
-                network = MockNetwork(SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PersistEdges())
+                network = MockNetwork(IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PersistEdges())
 
                 # test vertex removal
                 @test hasvertex(network, fixture.vertex_strand)
@@ -358,7 +358,7 @@ end
 
             # test regular vertex removal
             @testset let fixture = deepcopy(fixture)
-                network = MockNetwork(SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PersistEdges())
+                network = MockNetwork(IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PersistEdges())
 
                 # test vertex removal
                 @test hasvertex(network, fixture.delete_vertex)
@@ -378,7 +378,7 @@ end
         @testset "trait = RemoveEdges" begin
             # test stranded vertex removal
             @testset let fixture = deepcopy(fixture)
-                network = MockNetwork(SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.RemoveEdges())
+                network = MockNetwork(IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.RemoveEdges())
 
                 # test vertex removal
                 @test hasvertex(network, fixture.vertex_strand)
@@ -396,7 +396,7 @@ end
 
             # test regular vertex removal
             @testset let fixture = deepcopy(fixture)
-                network = MockNetwork(SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.RemoveEdges())
+                network = MockNetwork(IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.RemoveEdges())
 
                 # test vertex removal
                 @test hasvertex(network, fixture.delete_vertex)
@@ -420,7 +420,7 @@ end
         @testset "trait = PruneEdges" begin
             # test stranded vertex removal
             @testset let fixture = deepcopy(fixture)
-                network = MockNetwork(SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PruneEdges())
+                network = MockNetwork(IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PruneEdges())
 
                 # test vertex removal
                 @test hasvertex(network, fixture.vertex_strand)
@@ -438,7 +438,7 @@ end
 
             # test regular vertex removal
             @testset let fixture = deepcopy(fixture)
-                network = MockNetwork(SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PruneEdges())
+                network = MockNetwork(IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map)), Networks.PruneEdges())
 
                 # test vertex removal
                 @test hasvertex(network, fixture.delete_vertex)
@@ -471,10 +471,10 @@ end
 end
 
 @testset "rmedge!" begin
-    @testset "SimpleNetwork" begin
+    @testset "IncidentNetwork" begin
         # test regular edge removal
         @testset let fixture = deepcopy(fixture)
-            network = SimpleNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
+            network = IncidentNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
 
             # test edge removal
             @test hasedge(network, fixture.delete_edge)
@@ -486,7 +486,7 @@ end
         end
     end
 
-    @testset "WrapNetwork{SimpleNetwork}" begin
+    @testset "WrapNetwork{IncidentNetwork}" begin
         # test regular edge removal
         @testset let fixture = deepcopy(fixture)
             network = WrapNetwork(deepcopy(fixture.vertex_map), deepcopy(fixture.edge_map))
