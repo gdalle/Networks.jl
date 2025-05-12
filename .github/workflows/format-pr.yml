@@ -13,7 +13,7 @@ jobs:
           - master
 
     steps:
-      - uses: julia-actions/setup-julia@v1
+      - uses: julia-actions/setup-julia@v2
         with:
           version: '1.10'
 
@@ -35,7 +35,7 @@ jobs:
 
       - name: Create Pull Request
         id: cpr
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Format code
@@ -44,6 +44,7 @@ jobs:
           delete-branch: true
           labels: format
           reviewers: mofeing
+          base: main
 
       - name: Check outputs
         run: |
