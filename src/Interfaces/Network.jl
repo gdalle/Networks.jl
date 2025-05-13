@@ -37,6 +37,9 @@ EdgePersistenceTrait(graph, ::DontDelegate) = PruneEdges()
 function vertices end
 function edges end
 
+function vertex end
+function edge end
+
 function edge_incidents end
 function vertex_incidents end
 
