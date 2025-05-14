@@ -7,7 +7,9 @@ struct VertexTagKind <: TagKind end
 struct EdgeTagKind <: TagKind end
 
 function tag_kind end
-tag_kind(_::T) where {T} = TagKind(T)
+tag_kind(_::T) where {T} = tag_kind(T)
+
+# TODO is this correct?
 tag_kind(::Type{<:AbstractVertex}) = VertexTagKind()
 tag_kind(::Type{<:AbstractEdge}) = EdgeTagKind()
 
