@@ -14,6 +14,9 @@ export edges_set_strand, edges_set_open, edges_set_hyper
 # WARN `Taggable` is still experimantal, so don't export it yet
 include("Interfaces/Taggable.jl")
 
+# WARN `Attributeable` is still experimantal, so don't export it yet
+include("Interfaces/Attributeable.jl")
+
 include("Components/IncidentNetwork.jl")
 export IncidentNetwork
 
