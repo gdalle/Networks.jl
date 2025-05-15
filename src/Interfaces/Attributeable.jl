@@ -96,7 +96,7 @@ attrs_edge(tn, edge, ::DontDelegate) = throw(MethodError(attrs_edge, (tn, edge))
 getattr_global(tn, key) = getattr_global(tn, key, delegates(Attributeable(), tn))
 getattr_global(tn, key, ::DelegateTo) = getattr_global(delegate(Attributeable(), tn), key)
 function getattr_global(tn, key, ::DontDelegate)
-    @debug "Falling back to default implementation of `getattr_global`"
+    fallback(getattr_global)
     return getindex(attrs_global(tn), key)
 end
 
@@ -104,7 +104,7 @@ end
 getattr_vertex(tn, vertex, key) = getattr_vertex(tn, vertex, key, delegates(Attributeable(), tn))
 getattr_vertex(tn, vertex, key, ::DelegateTo) = getattr_vertex(delegate(Attributeable(), tn), vertex, key)
 function getattr_vertex(tn, vertex, key, ::DontDelegate)
-    @debug "Falling back to default implementation of `getattr_vertex`"
+    fallback(getattr_vertex)
     return getindex(attrs_vertex(tn, vertex), key)
 end
 
@@ -112,7 +112,7 @@ end
 getattr_edge(tn, edge, key) = getattr_edge(tn, edge, key, delegates(Attributeable(), tn))
 getattr_edge(tn, edge, key, ::DelegateTo) = getattr_edge(delegate(Attributeable(), tn), edge, key)
 function getattr_edge(tn, edge, key, ::DontDelegate)
-    @debug "Falling back to default implementation of `getattr_edge`"
+    fallback(getattr_edge)
     return getindex(attrs_edge(tn, edge), key)
 end
 
@@ -120,7 +120,7 @@ end
 hasattr_global(tn, key) = hasattr_global(tn, key, delegates(Attributeable(), tn))
 hasattr_global(tn, key, ::DelegateTo) = hasattr_global(delegate(Attributeable(), tn), key)
 function hasattr_global(tn, key, ::DontDelegate)
-    @debug "Falling back to default implementation of `hasattr_global`"
+    fallback(hasattr_global)
     return haskey(attrs_global(tn), key)
 end
 
@@ -128,7 +128,7 @@ end
 hasattr_vertex(tn, vertex, key) = hasattr_vertex(tn, vertex, key, delegates(Attributeable(), tn))
 hasattr_vertex(tn, vertex, key, ::DelegateTo) = hasattr_vertex(delegate(Attributeable(), tn), vertex, key)
 function hasattr_vertex(tn, vertex, key, ::DontDelegate)
-    @debug "Falling back to default implementation of `hasattr_vertex`"
+    fallback(hasattr_vertex)
     return haskey(attrs_vertex(tn, vertex), key)
 end
 
@@ -136,7 +136,7 @@ end
 hasattr_edge(tn, edge, key) = hasattr_edge(tn, edge, key, delegates(Attributeable(), tn))
 hasattr_edge(tn, edge, key, ::DelegateTo) = hasattr_edge(delegate(Attributeable(), tn), edge, key)
 function hasattr_edge(tn, edge, key, ::DontDelegate)
-    @debug "Falling back to default implementation of `hasattr_edge`"
+    fallback(hasattr_edge)
     return haskey(attrs_edge(tn, edge), key)
 end
 
