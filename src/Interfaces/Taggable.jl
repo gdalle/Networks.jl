@@ -55,25 +55,68 @@ function replace_edge_tag_inner! end
 
 # effects
 """
-    TagEffect{Tag,Obj} <: Effect
+    TagVertexEffect{Tag,Vertex} <: Effect
 
-Represents the effect of setting a link or mapping between a `Tag` and an `Obj`ect.
+Represents the effect of setting a tag on a vertex.
 """
-struct TagEffect{T,O} <: Effect
+struct TagVertexEffect{T,V} <: Effect
     tag::T
-    obj::O
+    obj::V
 end
 
 """
-    UntagEffect{Tag,Obj} <: Effect
+    TagEdgeEffect{Tag,Edge} <: Effect
 
-Represents the effect of setting a link or mapping between a `Tag` and an `Obj`ect.
+Represents the effect of setting a tag on an edge.
 """
-struct UntagEffect{T} <: Effect
+struct TagEdgeEffect{T,E} <: Effect
+    tag::T
+    obj::E
+end
+
+const TagEffect{T,O} = Union{TagVertexEffect{T,O},TagEdgeEffect{T,O}}
+
+"""
+    UntagVertexEffect{Tag} <: Effect
+
+Represents the effect of removing a tag from a vertex.
+"""
+struct UntagVertexEffect{T} <: Effect
     tag::T
 end
 
-# TODO `ReplaceTagEffect`
+"""
+    UntagEdgeEffect{Tag} <: Effect
+
+Represents the effect of removing a tag from an edge.
+"""
+struct UntagEdgeEffect{T} <: Effect
+    tag::T
+end
+
+const UntagEffect{T} = Union{UntagVertexEffect{T},UntagEdgeEffect{T}}
+
+"""
+    ReplaceVertexTagEffect{New,Old} <: Effect
+
+Represents the effect of replacing a vertex tag `Old` with a new tag `New`.
+"""
+struct ReplaceVertexTagEffect{New,Old} <: Effect
+    new::New
+    old::Old
+end
+
+"""
+    ReplaceEdgeTagEffect{New,Old} <: Effect
+
+Represents the effect of replacing an edge tag `Old` with a new tag `New`.
+"""
+struct ReplaceEdgeTagEffect{New,Old} <: Effect
+    new::New
+    old::Old
+end
+
+const ReplaceTagEffect{New,Old} = Union{ReplaceVertexTagEffect{New,Old},ReplaceEdgeTagEffect{New,Old}}
 
 # implementation
 ## TODO `tags`
@@ -137,9 +180,9 @@ tag_at_edge(graph, edge, ::DontDelegate) = throw(MethodError(tag_at_edge, (graph
 
 ## `tag_vertex!`
 function tag_vertex!(graph, vertex, tag)
-    checkeffect(graph, TagEffect(tag, vertex))
+    checkeffect(graph, TagVertexEffect(tag, vertex))
     tag_vertex_inner!(graph, vertex, tag)
-    handle!(graph, TagEffect(tag, vertex))
+    handle!(graph, TagVertexEffect(tag, vertex))
     return graph
 end
 
@@ -150,9 +193,9 @@ tag_vertex_inner!(graph, vertex, tag, ::DontDelegate) = throw(MethodError(tag_ve
 
 ## `tag_edge!`
 function tag_edge!(graph, edge, tag)
-    checkeffect(graph, TagEffect(tag, edge))
+    checkeffect(graph, TagEdgeEffect(tag, edge))
     tag_edge_inner!(graph, edge, tag)
-    handle!(graph, TagEffect(tag, edge))
+    handle!(graph, TagEdgeEffect(tag, edge))
     return graph
 end
 
@@ -163,9 +206,9 @@ tag_edge_inner!(graph, edge, tag, ::DontDelegate) = throw(MethodError(tag_edge_i
 
 ## `untag_vertex!`
 function untag_vertex!(graph, tag)
-    checkeffect(graph, UntagEffect(tag))
+    checkeffect(graph, UntagVertexEffect(tag))
     untag_vertex_inner!(graph, tag)
-    handle!(graph, UntagEffect(tag))
+    handle!(graph, UntagVertexEffect(tag))
     return graph
 end
 
@@ -176,9 +219,9 @@ untag_vertex_inner!(graph, tag, ::DontDelegate) = throw(MethodError(untag_vertex
 
 ## `untag_edge!`
 function untag_edge!(graph, tag)
-    checkeffect(graph, UntagEffect(tag))
+    checkeffect(graph, UntagEdgeEffect(tag))
     untag_edge_inner!(graph, tag)
-    handle!(graph, UntagEffect(tag))
+    handle!(graph, UntagEdgeEffect(tag))
     return graph
 end
 
@@ -189,9 +232,9 @@ untag_edge_inner!(graph, tag, ::DontDelegate) = throw(MethodError(untag_edge_inn
 
 ## `replace_vertex_tag!`
 function replace_vertex_tag!(graph, old, new)
-    checkeffect(graph, ReplaceEffect(new, old))
+    checkeffect(graph, ReplaceVertexTagEffect(new, old))
     replace_vertex_tag_inner!(graph, old, new)
-    handle!(graph, ReplaceEffect(new, old))
+    handle!(graph, ReplaceVertexTagEffect(new, old))
     return graph
 end
 
@@ -210,9 +253,9 @@ end
 
 ## `replace_edge_tag!`
 function replace_edge_tag!(graph, old, new)
-    checkeffect(graph, ReplaceEffect(new, old))
+    checkeffect(graph, ReplaceEdgeTagEffect(new, old))
     replace_edge_tag_inner!(graph, old, new)
-    handle!(graph, ReplaceEffect(new, old))
+    handle!(graph, ReplaceEdgeTagEffect(new, old))
     return graph
 end
 
