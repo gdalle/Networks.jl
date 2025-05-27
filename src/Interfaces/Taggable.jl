@@ -19,6 +19,8 @@ function tags end
 function tag end
 function hastag end
 function tag_at end
+function tag! end
+function untag! end
 function replace_tag! end
 
 # query methods
