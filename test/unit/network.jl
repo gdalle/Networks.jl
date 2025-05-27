@@ -55,7 +55,7 @@ struct WrapNetwork{G}
 end
 
 WrapNetwork(v, e) = WrapNetwork(IncidentNetwork(v, e))
-Networks.DelegatorTrait(::Networks.Network, ::WrapNetwork) = Networks.DelegateTo{:g}()
+Networks.DelegatorTrait(::Networks.Network, ::WrapNetwork) = Networks.DelegateToField{:g}()
 
 # mocks a network to test default implementations of optional methods
 struct MockNetwork{V,E,EdgePersistence<:Networks.EdgePersistenceTrait}

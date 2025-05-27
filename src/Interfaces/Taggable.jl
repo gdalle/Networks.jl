@@ -140,42 +140,42 @@ replace_tag!(graph, old, new, ::TagKind, ::TagKind) = throw(MethodError(replace_
 
 ## `vertex_tags`
 vertex_tags(graph) = vertex_tags(graph, DelegatorTrait(Taggable(), graph))
-vertex_tags(graph, ::DelegateTo) = vertex_tags(delegator(Taggable(), graph))
+vertex_tags(graph, ::DelegateToField) = vertex_tags(delegator(Taggable(), graph))
 vertex_tags(graph, ::DontDelegate) = throw(MethodError(vertex_tags, (graph,)))
 
 ## `edge_tags`
 edge_tags(graph) = edge_tags(graph, DelegatorTrait(Taggable(), graph))
-edge_tags(graph, ::DelegateTo) = edge_tags(delegator(Taggable(), graph))
+edge_tags(graph, ::DelegateToField) = edge_tags(delegator(Taggable(), graph))
 edge_tags(graph, ::DontDelegate) = throw(MethodError(edge_tags, (graph,)))
 
 ## `has_vertex_tag`
 has_vertex_tag(graph, tag) = has_vertex_tag(graph, tag, DelegatorTrait(Taggable(), graph))
-has_vertex_tag(graph, tag, ::DelegateTo) = has_vertex_tag(delegator(Taggable(), graph), tag)
+has_vertex_tag(graph, tag, ::DelegateToField) = has_vertex_tag(delegator(Taggable(), graph), tag)
 has_vertex_tag(graph, tag, ::DontDelegate) = throw(MethodError(has_vertex_tag, (graph, tag)))
 
 ## `has_edge_tag`
 has_edge_tag(graph, tag) = has_edge_tag(graph, tag, DelegatorTrait(Taggable(), graph))
-has_edge_tag(graph, tag, ::DelegateTo) = has_edge_tag(delegator(Taggable(), graph), tag)
+has_edge_tag(graph, tag, ::DelegateToField) = has_edge_tag(delegator(Taggable(), graph), tag)
 has_edge_tag(graph, tag, ::DontDelegate) = throw(MethodError(has_edge_tag, (graph, tag)))
 
 ## `vertex_at`
 vertex_at(graph, tag) = vertex_at(graph, tag, DelegatorTrait(Taggable(), graph))
-vertex_at(graph, tag, ::DelegateTo) = vertex_at(delegator(Taggable(), graph), tag)
+vertex_at(graph, tag, ::DelegateToField) = vertex_at(delegator(Taggable(), graph), tag)
 vertex_at(graph, tag, ::DontDelegate) = throw(MethodError(vertex_at, (graph, tag)))
 
 ## `edge_at`
 edge_at(graph, tag) = edge_at(graph, tag, DelegatorTrait(Taggable(), graph))
-edge_at(graph, tag, ::DelegateTo) = edge_at(delegator(Taggable(), graph), tag)
+edge_at(graph, tag, ::DelegateToField) = edge_at(delegator(Taggable(), graph), tag)
 edge_at(graph, tag, ::DontDelegate) = throw(MethodError(edge_at, (graph, tag)))
 
 ## `tag_at_vertex`
 tag_at_vertex(graph, vertex) = vertex_at_vertex(graph, vertex, DelegatorTrait(Taggable(), graph))
-tag_at_vertex(graph, vertex, ::DelegateTo) = tag_at_vertex(delegator(Taggable(), graph), vertex)
+tag_at_vertex(graph, vertex, ::DelegateToField) = tag_at_vertex(delegator(Taggable(), graph), vertex)
 tag_at_vertex(graph, vertex, ::DontDelegate) = throw(MethodError(tag_at_vertex, (graph, vertex)))
 
 ## `tag_at_edge`
 tag_at_edge(graph, edge) = vertex_at_vertex(graph, edge, DelegatorTrait(Taggable(), graph))
-tag_at_edge(graph, edge, ::DelegateTo) = tag_at_edge(delegator(Taggable(), graph), edge)
+tag_at_edge(graph, edge, ::DelegateToField) = tag_at_edge(delegator(Taggable(), graph), edge)
 tag_at_edge(graph, edge, ::DontDelegate) = throw(MethodError(tag_at_edge, (graph, edge)))
 
 ## `tag_vertex!`
@@ -188,7 +188,7 @@ end
 
 ## `tag_vertex_inner!`
 tag_vertex_inner!(graph, vertex, tag) = tag_vertex_inner!(graph, vertex, tag, DelegatorTrait(Taggable(), graph))
-tag_vertex_inner!(graph, vertex, tag, ::DelegateTo) = tag_vertex_inner!(delegator(Taggable(), graph), vertex, tag)
+tag_vertex_inner!(graph, vertex, tag, ::DelegateToField) = tag_vertex_inner!(delegator(Taggable(), graph), vertex, tag)
 tag_vertex_inner!(graph, vertex, tag, ::DontDelegate) = throw(MethodError(tag_vertex_inner!, (graph, vertex, tag)))
 
 ## `tag_edge!`
@@ -201,7 +201,7 @@ end
 
 ## `tag_edge_inner!`
 tag_edge_inner!(graph, edge, tag) = tag_edge_inner!(graph, edge, tag, DelegatorTrait(Taggable(), graph))
-tag_edge_inner!(graph, edge, tag, ::DelegateTo) = tag_edge_inner!(delegator(Taggable(), graph), edge, tag)
+tag_edge_inner!(graph, edge, tag, ::DelegateToField) = tag_edge_inner!(delegator(Taggable(), graph), edge, tag)
 tag_edge_inner!(graph, edge, tag, ::DontDelegate) = throw(MethodError(tag_edge_inner!, (graph, edge, tag)))
 
 ## `untag_vertex!`
@@ -214,7 +214,7 @@ end
 
 ## `untag_vertex_inner!`
 untag_vertex_inner!(graph, tag) = untag_vertex_inner!(graph, tag, DelegatorTrait(Taggable(), graph))
-untag_vertex_inner!(graph, tag, ::DelegateTo) = untag_vertex_inner!(delegator(Taggable(), graph), tag)
+untag_vertex_inner!(graph, tag, ::DelegateToField) = untag_vertex_inner!(delegator(Taggable(), graph), tag)
 untag_vertex_inner!(graph, tag, ::DontDelegate) = throw(MethodError(untag_vertex_inner!, (graph, tag)))
 
 ## `untag_edge!`
@@ -227,7 +227,7 @@ end
 
 ## `untag_edge_inner!`
 untag_edge_inner!(graph, tag) = untag_edge_inner!(graph, tag, DelegatorTrait(Taggable(), graph))
-untag_edge_inner!(graph, tag, ::DelegateTo) = untag_edge_inner!(delegator(Taggable(), graph), tag)
+untag_edge_inner!(graph, tag, ::DelegateToField) = untag_edge_inner!(delegator(Taggable(), graph), tag)
 untag_edge_inner!(graph, tag, ::DontDelegate) = throw(MethodError(untag_edge_inner!, (graph, tag)))
 
 ## `replace_vertex_tag!`
@@ -243,7 +243,7 @@ function replace_vertex_tag_inner!(graph, old, new)
     replace_vertex_tag_inner!(graph, old, new, DelegatorTrait(Taggable(), graph))
 end
 
-function replace_vertex_tag_inner!(graph, old, new, ::DelegateTo)
+function replace_vertex_tag_inner!(graph, old, new, ::DelegateToField)
     replace_vertex_tag_inner!(delegator(Taggable(), graph), old, new)
 end
 
@@ -264,7 +264,7 @@ function replace_edge_tag_inner!(graph, old, new)
     replace_edge_tag_inner!(graph, old, new, DelegatorTrait(Taggable(), graph))
 end
 
-function replace_edge_tag_inner!(graph, old, new, ::DelegateTo)
+function replace_edge_tag_inner!(graph, old, new, ::DelegateToField)
     replace_edge_tag_inner!(delegator(Taggable(), graph), old, new)
 end
 

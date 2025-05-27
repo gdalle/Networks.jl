@@ -1,8 +1,9 @@
 module Networks
 
-include("Utils.jl")
+using DelegatorTraits
+import DelegatorTraits: DelegatorTrait, ImplementorTrait
 
-include("Interfaces/Interface.jl")
+include("Utils.jl")
 
 include("Interfaces/Network.jl")
 export Network
