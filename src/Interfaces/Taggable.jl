@@ -83,12 +83,12 @@ has_edge_tag(graph, tag, ::DelegateToField) = has_edge_tag(delegator(Taggable(),
 has_edge_tag(graph, tag, ::DontDelegate) = throw(MethodError(has_edge_tag, (graph, tag)))
 
 ## `tag_at_vertex`
-tag_at_vertex(graph, vertex) = vertex_at_vertex(graph, vertex, DelegatorTrait(Taggable(), graph))
+tag_at_vertex(graph, vertex) = tag_at_vertex(graph, vertex, DelegatorTrait(Taggable(), graph))
 tag_at_vertex(graph, vertex, ::DelegateToField) = tag_at_vertex(delegator(Taggable(), graph), vertex)
 tag_at_vertex(graph, vertex, ::DontDelegate) = throw(MethodError(tag_at_vertex, (graph, vertex)))
 
 ## `tag_at_edge`
-tag_at_edge(graph, edge) = vertex_at_vertex(graph, edge, DelegatorTrait(Taggable(), graph))
+tag_at_edge(graph, edge) = tag_at_edge(graph, edge, DelegatorTrait(Taggable(), graph))
 tag_at_edge(graph, edge, ::DelegateToField) = tag_at_edge(delegator(Taggable(), graph), edge)
 tag_at_edge(graph, edge, ::DontDelegate) = throw(MethodError(tag_at_edge, (graph, edge)))
 
