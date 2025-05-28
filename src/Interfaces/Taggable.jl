@@ -30,9 +30,7 @@ function edge_tags end
 function has_vertex_tag end
 function has_edge_tag end
 
-function vertex_at end
-function edge_at end
-
+# TODO replace for `vertex_tag_at` and `edge_tag_at`?
 function tag_at_vertex end
 function tag_at_edge end
 
@@ -83,16 +81,6 @@ has_vertex_tag(graph, tag, ::DontDelegate) = throw(MethodError(has_vertex_tag, (
 has_edge_tag(graph, tag) = has_edge_tag(graph, tag, DelegatorTrait(Taggable(), graph))
 has_edge_tag(graph, tag, ::DelegateToField) = has_edge_tag(delegator(Taggable(), graph), tag)
 has_edge_tag(graph, tag, ::DontDelegate) = throw(MethodError(has_edge_tag, (graph, tag)))
-
-## `vertex_at`
-vertex_at(graph, tag) = vertex_at(graph, tag, DelegatorTrait(Taggable(), graph))
-vertex_at(graph, tag, ::DelegateToField) = vertex_at(delegator(Taggable(), graph), tag)
-vertex_at(graph, tag, ::DontDelegate) = throw(MethodError(vertex_at, (graph, tag)))
-
-## `edge_at`
-edge_at(graph, tag) = edge_at(graph, tag, DelegatorTrait(Taggable(), graph))
-edge_at(graph, tag, ::DelegateToField) = edge_at(delegator(Taggable(), graph), tag)
-edge_at(graph, tag, ::DontDelegate) = throw(MethodError(edge_at, (graph, tag)))
 
 ## `tag_at_vertex`
 tag_at_vertex(graph, vertex) = vertex_at_vertex(graph, vertex, DelegatorTrait(Taggable(), graph))

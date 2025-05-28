@@ -43,6 +43,9 @@ function edge end
 function edge_incidents end
 function vertex_incidents end
 
+function vertex_at end
+function edge_at end
+
 :(Base.copy)
 
 # query methods with default implementation
@@ -136,6 +139,16 @@ function nedges(graph, ::DontDelegate)
     fallback(nedges)
     return length(edges(graph))
 end
+
+## `vertex_at`
+vertex_at(graph, tag) = vertex_at(graph, tag, DelegatorTrait(Network(), graph))
+vertex_at(graph, tag, ::DelegateToField) = vertex_at(delegator(Network(), graph), tag)
+vertex_at(graph, tag, ::DontDelegate) = throw(MethodError(vertex_at, (graph, tag)))
+
+## `edge_at`
+edge_at(graph, tag) = edge_at(graph, tag, DelegatorTrait(Network(), graph))
+edge_at(graph, tag, ::DelegateToField) = edge_at(delegator(Network(), graph), tag)
+edge_at(graph, tag, ::DontDelegate) = throw(MethodError(edge_at, (graph, tag)))
 
 ## `edges_set_strand`
 edges_set_strand(graph) = edges_set_strand(graph, DelegatorTrait(Network(), graph))
