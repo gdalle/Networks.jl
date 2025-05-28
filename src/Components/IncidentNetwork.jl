@@ -20,7 +20,7 @@ function Base.copy(graph::IncidentNetwork{V,E}) where {V,E}
 end
 
 # Network implementation
-ImplementorTrait(::Network, ::IncidentNetwork) = Implements()
+DelegatorTraits.ImplementorTrait(::Network, ::IncidentNetwork) = DelegatorTraits.Implements()
 
 # TODO parameterize `EdgePersistenceTrait` to allow for different edge persistence strategies
 EdgePersistenceTrait(::IncidentNetwork) = PersistEdges()

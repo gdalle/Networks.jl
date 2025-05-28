@@ -18,7 +18,7 @@ end
 
 Base.copy(g::AdjacentNetwork) = AdjacentNetwork(copy.(g.fadjlist), g.ne)
 
-Implements(::Network, ::AdjacentNetwork) = Implements()
+DelegatorTraits.ImplementorTrait(::Network, ::AdjacentNetwork) = DelegatorTraits.Implements()
 EdgePersistenceTrait(::AdjacentNetwork) = RemoveEdges()
 
 vertices(g::AdjacentNetwork) = 1:length(g.fadjlist)
