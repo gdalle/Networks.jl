@@ -8,14 +8,14 @@ include("Utils.jl")
 include("Interfaces/Network.jl")
 export Network
 
-export vertices, edge_incidents, vertex_type, hasvertex, nvertices, addvertex!, rmvertex!
-export edges, vertex_incidents, edge_type, hasedge, nedges, addedge!, rmedge!
+export vertices, vertex_at, edge_incidents, vertex_type, hasvertex, nvertices, addvertex!, rmvertex!
+export edges, edge_at, vertex_incidents, edge_type, hasedge, nedges, addedge!, rmedge!
 export edges_set_strand, edges_set_open, edges_set_hyper
 
 include("Interfaces/Taggable.jl")
 export tags, tag, hastag, tag_at, replace_tag!
-export vertex_tags, has_vertex_tag, vertex_at, tag_at_vertex, tag_vertex!, untag_vertex!, replace_vertex_tag!
-export edge_tags, has_edge_tag, edge_at, tag_at_edge, tag_edge!, untag_edge!, replace_edge_tag!
+export vertex_tags, has_vertex_tag, tag_at_vertex, tag_vertex!, untag_vertex!, replace_vertex_tag!
+export edge_tags, has_edge_tag, tag_at_edge, tag_edge!, untag_edge!, replace_edge_tag!
 
 # WARN `Attributeable` is still experimantal, so don't export it yet
 include("Interfaces/Attributeable.jl")
