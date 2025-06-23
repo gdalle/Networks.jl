@@ -80,7 +80,7 @@ function addvertex!(graph::IncidentNetwork{V,E}, vertex) where {V,E}
     return graph
 end
 
-# TODO parameterize `EdgePersistenceTrait` to allow for different edge persistence strategies
+# TODO parameterize `EdgePersistence` to allow for different edge persistence strategies
 function rmvertex!(graph::IncidentNetwork, vertex)
     # isempty(vertex_incidents(graph, vertex)) || throw(ArgumentError("Vertex $vertex is incident to edges. Unlink edges first."))
     hasvertex(graph, vertex) || throw(ArgumentError("Vertex $vertex does not exist in the graph"))
