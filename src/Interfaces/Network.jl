@@ -37,6 +37,9 @@ EdgePersistence(graph, ::DontDelegate) = PruneEdges()
 function vertices end
 function edges end
 
+function vertex end
+function edge end
+
 """
     all_vertices(graph)
 
@@ -50,9 +53,6 @@ function all_vertices end
 Returns the edges in the `graph`.
 """
 function all_edges end
-
-function vertex end
-function edge end
 
 """
     edge_incidents(graph, e)
@@ -167,19 +167,28 @@ function prune_edges! end
 
 # implementation
 ## `vertices`
-vertices(graph) = vertices(graph, DelegatorTrait(Network(), graph))
-vertices(graph, ::DelegateToField) = vertices(delegator(Network(), graph))
-vertices(graph, ::DontDelegate) = throw(MethodError(vertices, (graph,)))
+vertices(graph; kwargs...) = vertices(sort_nt(kwargs), graph)
+vertices(::NamedTuple{}, graph) = all_vertices(graph)
+
+## `edges`
+edges(graph; kwargs...) = edges(sort_nt(kwargs), graph)
+edges(::NamedTuple{}, graph) = all_edges(graph)
+function edges(::@NamedTuple{set::Symbol}, graph)
+    if set == :open
+        return edges_set_open(graph)
+    elseif set == :strand
+        return edges_set_strand(graph)
+    elseif set == :hyper
+        return edges_set_hyper(graph)
+    else
+        throw(ArgumentError("Unknown edge set: $set"))
+    end
+end
 
 ## `all_vertices`
 all_vertices(graph) = all_vertices(graph, DelegatorTrait(Network(), graph))
 all_vertices(graph, ::DelegateToField) = all_vertices(delegator(Network(), graph))
 all_vertices(graph, ::DontDelegate) = throw(MethodError(all_vertices, (graph,)))
-
-## `edges`
-edges(graph) = edges(graph, DelegatorTrait(Network(), graph))
-edges(graph, ::DelegateToField) = edges(delegator(Network(), graph))
-edges(graph, ::DontDelegate) = throw(MethodError(edges, (graph,)))
 
 ## `all_edges`
 all_edges(graph) = all_edges(graph, DelegatorTrait(Network(), graph))
