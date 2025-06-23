@@ -6,13 +6,15 @@ Networks.jl uses [DelegatorTraits.jl](https://github.com/bsc-quantic/DelegatorTr
 DelegatorTraits.DelegatorTrait(::Network, ::MyWrapperType) = DelegatorTraits.DelegateToField{:the_field_name}()
 ```
 
+Using [`DelegatorTraits.jl`](https://github.com/bsc-quantic/DelegatorTraits.jl) is completely optional and you can still do method delegation manually.
+
 ## Network
 
 The `Network` interface abstracts a network or graph as a bipartite graph whose sets are the vertices and the edges.
 A type implementing the `Network` interface must implement the following methods:
 
 | Required method          | Description                                |
-| ------------------------ | ------------------------------------------ |
+| :----------------------- | :----------------------------------------- |
 | `all_vertices(g)`        | Returns the list of vertices               |
 | `all_edges(g)`           | Returns the list of edges                  |
 | `edge_incidents(g, e)`   | Returns the vertices connected by edge `e` |
@@ -23,7 +25,7 @@ A type implementing the `Network` interface must implement the following methods
 The following methods have a default implementation or their implementation is optional.
 
 | Method              | When should this method be defined?                  | Default definition    | Brief description                                      |
-| ------------------- | ---------------------------------------------------- | --------------------- | ------------------------------------------------------ |
+| :------------------ | :--------------------------------------------------- | :-------------------- | :----------------------------------------------------- |
 | `vertex_type(g)`    | If your vertex type is type-stable                   | `Any`                 | Returns the type used for representing a vertex        |
 | `edge_type(g)`      | If your edge type is type-stable                     | `Any`                 | Returns the type used for representing an edge         |
 | `hasvertex(g, v)`   | If there is a more performant way                    | `v in vertices(g)`    | Returns `true` if vertex `v` is present in network `g` |
@@ -36,7 +38,7 @@ The following methods have a default implementation or their implementation is o
 ### Mutating methods
 
 | Method            | Brief description                               |
-| ----------------- | ----------------------------------------------- |
+| :---------------- | :---------------------------------------------- |
 | `addvertex!(g,v)` | Adds vertex `v` to network `g`                  |
 | `addedge!(g,e)`   | Adds edge `e` to network `g`                    |
 | `rmvertex!(g,v)`  | Removes vertex `v` from network `g`             |
