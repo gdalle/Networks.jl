@@ -1,5 +1,3 @@
-fallback(f) = @debug "Falling back to default method" f
-
 function hist(x; init=Dict{eltype(x),Int}())
     for xi in x
         if haskey(init, xi)
