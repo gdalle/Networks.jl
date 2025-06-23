@@ -1,5 +1,9 @@
 # Networks.jl
 
+[![CI](https://github.com/bsc-quantic/Networks.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/bsc-quantic/Networks.jl/actions/workflows/CI.yml)
+[![Documentation: stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://bsc-quantic.github.io/Networks.jl/)
+[![Documentation: dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://bsc-quantic.github.io/Networks.jl/dev/)
+
 Networks.jl is an work-in-progress proposal for an alternative graph interface in Julia.
 It is a product of my frustations developing custom graph-like types on top of Graphs.jl.
 While performant, Graphs.jl has several limitations:
