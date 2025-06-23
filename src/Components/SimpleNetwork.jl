@@ -6,53 +6,53 @@ struct SimpleEdge{T} <: AbstractEdge
 end
 
 """
-    AdjacentNetwork <: AbstractNetwork
+    SimpleNetwork <: AbstractNetwork
 
 A network represented as an adjacency list.
 It is the translation of `SimpleGraph` from Graphs.jl to the [`Network`](@ref) interface.
 """
-mutable struct AdjacentNetwork{T<:Integer} <: AbstractNetwork
+mutable struct SimpleNetwork{T<:Integer} <: AbstractNetwork
     fadjlist::Vector{Vector{T}}
     ne::Int
 end
 
-AdjacentNetwork{T}() where {T} = AdjacentNetwork{T}(Vector{Vector{T}}(), 0)
-AdjacentNetwork{T}(n::Integer) where {T} = AdjacentNetwork{T}([T[] for _ in 1:n], 0)
+SimpleNetwork{T}() where {T} = SimpleNetwork{T}(Vector{Vector{T}}(), 0)
+SimpleNetwork{T}(n::Integer) where {T} = SimpleNetwork{T}([T[] for _ in 1:n], 0)
 
-Base.copy(g::AdjacentNetwork) = AdjacentNetwork(copy.(g.fadjlist), g.ne)
+Base.copy(g::SimpleNetwork) = SimpleNetwork(copy.(g.fadjlist), g.ne)
 
-DelegatorTraits.ImplementorTrait(::Network, ::AdjacentNetwork) = DelegatorTraits.Implements()
-EdgePersistence(::AdjacentNetwork) = RemoveEdges()
+DelegatorTraits.ImplementorTrait(::Network, ::SimpleNetwork) = DelegatorTraits.Implements()
+EdgePersistence(::SimpleNetwork) = RemoveEdges()
 
-vertices(g::AdjacentNetwork) = 1:length(g.fadjlist)
-edges(g::AdjacentNetwork) = SimpleEdgeIter(g)
+vertices(g::SimpleNetwork) = 1:length(g.fadjlist)
+edges(g::SimpleNetwork) = SimpleEdgeIter(g)
 
-all_vertices(g::AdjacentNetwork) = 1:length(g.fadjlist)
-all_edges(g::AdjacentNetwork) = SimpleEdgeIter(g)
+all_vertices(g::SimpleNetwork) = 1:length(g.fadjlist)
+all_edges(g::SimpleNetwork) = SimpleEdgeIter(g)
 
-edge_incidents(g::AdjacentNetwork, e::SimpleEdge) = [e.v1, e.v2]
-vertex_incidents(g::AdjacentNetwork, v) = g.fadjlist[v]
+edge_incidents(g::SimpleNetwork, e::SimpleEdge) = [e.v1, e.v2]
+vertex_incidents(g::SimpleNetwork, v) = g.fadjlist[v]
 
-vertex_type(g::AdjacentNetwork{T}) where {T} = T
-edge_type(g::AdjacentNetwork{T}) where {T} = SimpleEdge{T}
+vertex_type(g::SimpleNetwork{T}) where {T} = T
+edge_type(g::SimpleNetwork{T}) where {T} = SimpleEdge{T}
 
-hasvertex(g::AdjacentNetwork, v) = 1 <= v <= length(g.fadjlist)
-hasedge(g::AdjacentNetwork, e::SimpleEdge) = e.v2 ∈ g.fadjlist[e.v1]
+hasvertex(g::SimpleNetwork, v) = 1 <= v <= length(g.fadjlist)
+hasedge(g::SimpleNetwork, e::SimpleEdge) = e.v2 ∈ g.fadjlist[e.v1]
 
-nvertices(g::AdjacentNetwork) = length(g.fadjlist)
-nedges(g::AdjacentNetwork) = g.ne
+nvertices(g::SimpleNetwork) = length(g.fadjlist)
+nedges(g::SimpleNetwork) = g.ne
 
-edges_set_strand(::AdjacentNetwork{T}) where {T} = SimpleEdge{T}[]
-edges_set_open(::AdjacentNetwork{T}) where {T} = SimpleEdge{T}[]
-edges_set_hyper(::AdjacentNetwork{T}) where {T} = SimpleEdge{T}[]
+edges_set_strand(::SimpleNetwork{T}) where {T} = SimpleEdge{T}[]
+edges_set_open(::SimpleNetwork{T}) where {T} = SimpleEdge{T}[]
+edges_set_hyper(::SimpleNetwork{T}) where {T} = SimpleEdge{T}[]
 
-function addvertex!(g::AdjacentNetwork)
+function addvertex!(g::SimpleNetwork)
     n = nvertices(g) + 1
     push!(g.fadjlist, Vector{vertex_type(g)}())
     return n
 end
 
-function addedge!(g::AdjacentNetwork, e::SimpleEdge)
+function addedge!(g::SimpleNetwork, e::SimpleEdge)
     a, b = e.v1, e.v2
     @assert a ∈ vertices(g)
     @assert b ∈ vertices(g)
@@ -66,12 +66,12 @@ function addedge!(g::AdjacentNetwork, e::SimpleEdge)
     return e
 end
 
-function addedge!(g::AdjacentNetwork, u, v)
+function addedge!(g::SimpleNetwork, u, v)
     e = SimpleEdge(u, v)
     return addedge!(g, e)
 end
 
-function rmvertex!(g::AdjacentNetwork, v)
+function rmvertex!(g::SimpleNetwork, v)
     @assert hasvertex(g, v)
 
     # Update the adjacency lists of other vertices
@@ -86,7 +86,7 @@ function rmvertex!(g::AdjacentNetwork, v)
     return v
 end
 
-function rmedge!(g::AdjacentNetwork, e::SimpleEdge)
+function rmedge!(g::SimpleNetwork, e::SimpleEdge)
     @assert hasedge(g, e)
     a, b = e.v1, e.v2
 
@@ -99,11 +99,11 @@ function rmedge!(g::AdjacentNetwork, e::SimpleEdge)
     return e
 end
 
-Base.@propagate_inbounds fadj(g::AdjacentNetwork) = g.fadjlist
-Base.@propagate_inbounds fadj(g::AdjacentNetwork, u) = g.fadjlist[u]
+Base.@propagate_inbounds fadj(g::SimpleNetwork) = g.fadjlist
+Base.@propagate_inbounds fadj(g::SimpleNetwork, u) = g.fadjlist[u]
 
 struct SimpleEdgeIter{T}
-    g::AdjacentNetwork{T}
+    g::SimpleNetwork{T}
 end
 
 Base.IteratorSize(::Type{<:SimpleEdgeIter}) = Base.HasLength()

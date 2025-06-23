@@ -23,7 +23,7 @@ include("Interfaces/Attributeable.jl")
 include("Components/IncidentNetwork.jl")
 export IncidentNetwork
 
-include("Components/AdjacentNetwork.jl")
-export AdjacentNetwork
+include("Components/SimpleNetwork.jl")
+export SimpleNetwork
 
 end # module Networks
