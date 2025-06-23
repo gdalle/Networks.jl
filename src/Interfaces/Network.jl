@@ -15,7 +15,7 @@ end
 
 # traits
 """
-    EdgePersistenceTrait
+    EdgePersistence
 
 Trait for edge persitence in a [`Network`](@ref). It defines the behavior of edges when a vertex is removed.
 The following traits are defined:
@@ -24,14 +24,14 @@ The following traits are defined:
   - `RemoveEdges`: edges are **always** removed implicitly.
   - `PruneEdges` (default): edges are removed if left stranded (i.e. no other vertex is linked with it).
 """
-abstract type EdgePersistenceTrait end
-struct PersistEdges <: EdgePersistenceTrait end
-struct RemoveEdges <: EdgePersistenceTrait end
-struct PruneEdges <: EdgePersistenceTrait end
+abstract type EdgePersistence end
+struct PersistEdges <: EdgePersistence end
+struct RemoveEdges <: EdgePersistence end
+struct PruneEdges <: EdgePersistence end
 
-EdgePersistenceTrait(graph) = EdgePersistenceTrait(graph, DelegatorTrait(Network(), graph))
-EdgePersistenceTrait(graph, ::DelegateToField) = EdgePersistenceTrait(delegator(Network(), graph))
-EdgePersistenceTrait(graph, ::DontDelegate) = PruneEdges()
+EdgePersistence(graph) = EdgePersistence(graph, DelegatorTrait(Network(), graph))
+EdgePersistence(graph, ::DelegateToField) = EdgePersistence(delegator(Network(), graph))
+EdgePersistence(graph, ::DontDelegate) = PruneEdges()
 
 # query methods
 function vertices end
@@ -239,7 +239,7 @@ rmvertex!(graph, v) = rmvertex!(graph, v, DelegatorTrait(Network(), graph))
 rmvertex!(graph, v, ::DelegateToField) = rmvertex!(delegator(Network(), graph), v)
 rmvertex!(graph, v, ::DontDelegate) = throw(MethodError(rmvertex!, (graph, v)))
 
-# rmvertex!(graph, v) = rmvertex!(graph, v, EdgePersistenceTrait(graph))
+# rmvertex!(graph, v) = rmvertex!(graph, v, EdgePersistence(graph))
 
 # function rmvertex!(graph, v, ::PersistEdges)
 #     checkeffect(graph, RemoveVertexEffect(v))

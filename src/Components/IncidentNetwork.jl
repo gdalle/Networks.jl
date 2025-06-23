@@ -1,6 +1,6 @@
 using DelegatorTraits
 
-# TODO parameterize `EdgePersistenceTrait` to allow for different edge persistence strategies
+# TODO parameterize `EdgePersistence` to allow for different edge persistence strategies
 struct IncidentNetwork{V,E} <: AbstractNetwork
     vertexmap::Dict{V,Set{E}}
     edgemap::Dict{E,Set{V}}
@@ -22,8 +22,8 @@ end
 # Network implementation
 DelegatorTraits.ImplementorTrait(::Network, ::IncidentNetwork) = DelegatorTraits.Implements()
 
-# TODO parameterize `EdgePersistenceTrait` to allow for different edge persistence strategies
-EdgePersistenceTrait(::IncidentNetwork) = PersistEdges()
+# TODO parameterize `EdgePersistence` to allow for different edge persistence strategies
+EdgePersistence(::IncidentNetwork) = PersistEdges()
 
 vertices(graph::IncidentNetwork) = keys(graph.vertexmap)
 edges(graph::IncidentNetwork) = keys(graph.edgemap)

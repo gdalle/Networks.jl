@@ -58,13 +58,13 @@ WrapNetwork(v, e) = WrapNetwork(IncidentNetwork(v, e))
 Networks.DelegatorTrait(::Networks.Network, ::WrapNetwork) = Networks.DelegateToField{:g}()
 
 # mocks a network to test default implementations of optional methods
-struct MockNetwork{V,E,EdgePersistence<:Networks.EdgePersistenceTrait}
+struct MockNetwork{V,E,EdgePersistence<:Networks.EdgePersistence}
     g::IncidentNetwork{V,E}
 end
 
 MockNetwork(v::V, e::E) where {V,E} = MockNetwork(IncidentNetwork(v, e))
-MockNetwork(g::IncidentNetwork{V,E}, ::EP) where {V,E,EP<:Networks.EdgePersistenceTrait} = MockNetwork{V,E,EP}(g)
-MockNetwork(g::IncidentNetwork) = MockNetwork(g, Networks.EdgePersistenceTrait(g))
+MockNetwork(g::IncidentNetwork{V,E}, ::EP) where {V,E,EP<:Networks.EdgePersistence} = MockNetwork{V,E,EP}(g)
+MockNetwork(g::IncidentNetwork) = MockNetwork(g, Networks.EdgePersistence(g))
 
 Networks.ImplementorTrait(::Networks.Network, ::MockNetwork) = Networks.Implements()
 Networks.vertices(g::MockNetwork) = vertices(g.g)
@@ -79,7 +79,7 @@ Networks.rmvertex!(g::MockNetwork, vertex) = rmvertex!(g.g, vertex)
 Networks.addedge!(g::MockNetwork, edge, vertex_set) = addedge!(g.g, edge, vertex_set)
 Networks.rmedge!(g::MockNetwork, edge) = rmedge!(g.g, edge)
 
-Networks.EdgePersistenceTrait(::MockNetwork{V,E,EP}) where {V,E,EP} = EP()
+Networks.EdgePersistence(::MockNetwork{V,E,EP}) where {V,E,EP} = EP()
 
 @testset"all_vertices" begin
     @testset "$(typeof(network))" for network in [

@@ -22,7 +22,7 @@ AdjacentNetwork{T}(n::Integer) where {T} = AdjacentNetwork{T}([T[] for _ in 1:n]
 Base.copy(g::AdjacentNetwork) = AdjacentNetwork(copy.(g.fadjlist), g.ne)
 
 DelegatorTraits.ImplementorTrait(::Network, ::AdjacentNetwork) = DelegatorTraits.Implements()
-EdgePersistenceTrait(::AdjacentNetwork) = RemoveEdges()
+EdgePersistence(::AdjacentNetwork) = RemoveEdges()
 
 vertices(g::AdjacentNetwork) = 1:length(g.fadjlist)
 edges(g::AdjacentNetwork) = SimpleEdgeIter(g)
