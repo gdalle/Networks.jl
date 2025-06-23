@@ -81,23 +81,23 @@ Networks.rmedge!(g::MockNetwork, edge) = rmedge!(g.g, edge)
 
 Networks.EdgePersistenceTrait(::MockNetwork{V,E,EP}) where {V,E,EP} = EP()
 
-@testset"vertices" begin
+@testset"all_vertices" begin
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
-        @test issetequal(vertices(network), fixture.vertices)
+        @test issetequal(all_vertices(network), fixture.vertices)
     end
 end
 
-@testset "edges" begin
+@testset "all_edges" begin
     @testset "$(typeof(network))" for network in [
         IncidentNetwork(fixture.vertex_map, fixture.edge_map),
         WrapNetwork(fixture.vertex_map, fixture.edge_map),
         MockNetwork(fixture.vertex_map, fixture.edge_map),
     ]
-        @test issetequal(edges(network), fixture.edges)
+        @test issetequal(all_edges(network), fixture.edges)
     end
 end
 

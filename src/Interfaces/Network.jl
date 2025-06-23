@@ -37,6 +37,20 @@ EdgePersistenceTrait(graph, ::DontDelegate) = PruneEdges()
 function vertices end
 function edges end
 
+"""
+    all_vertices(graph)
+
+Returns the vertices in the `graph`.
+"""
+function all_vertices end
+
+"""
+    all_edges(graph)
+
+Returns the edges in the `graph`.
+"""
+function all_edges end
+
 function vertex end
 function edge end
 
@@ -77,10 +91,20 @@ vertices(graph) = vertices(graph, DelegatorTrait(Network(), graph))
 vertices(graph, ::DelegateToField) = vertices(delegator(Network(), graph))
 vertices(graph, ::DontDelegate) = throw(MethodError(vertices, (graph,)))
 
+## `all_vertices`
+all_vertices(graph) = all_vertices(graph, DelegatorTrait(Network(), graph))
+all_vertices(graph, ::DelegateToField) = all_vertices(delegator(Network(), graph))
+all_vertices(graph, ::DontDelegate) = throw(MethodError(all_vertices, (graph,)))
+
 ## `edges`
 edges(graph) = edges(graph, DelegatorTrait(Network(), graph))
 edges(graph, ::DelegateToField) = edges(delegator(Network(), graph))
 edges(graph, ::DontDelegate) = throw(MethodError(edges, (graph,)))
+
+## `all_edges`
+all_edges(graph) = all_edges(graph, DelegatorTrait(Network(), graph))
+all_edges(graph, ::DelegateToField) = all_edges(delegator(Network(), graph))
+all_edges(graph, ::DontDelegate) = throw(MethodError(all_edges, (graph,)))
 
 ## `edge_incidents`
 edge_incidents(graph, e) = edge_incidents(graph, e, DelegatorTrait(Network(), graph))

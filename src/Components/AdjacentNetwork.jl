@@ -27,6 +27,9 @@ EdgePersistenceTrait(::AdjacentNetwork) = RemoveEdges()
 vertices(g::AdjacentNetwork) = 1:length(g.fadjlist)
 edges(g::AdjacentNetwork) = SimpleEdgeIter(g)
 
+all_vertices(g::AdjacentNetwork) = 1:length(g.fadjlist)
+all_edges(g::AdjacentNetwork) = SimpleEdgeIter(g)
+
 edge_incidents(g::AdjacentNetwork, e::SimpleEdge) = [e.v1, e.v2]
 vertex_incidents(g::AdjacentNetwork, v) = g.fadjlist[v]
 

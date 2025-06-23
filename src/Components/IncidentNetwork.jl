@@ -28,6 +28,9 @@ EdgePersistenceTrait(::IncidentNetwork) = PersistEdges()
 vertices(graph::IncidentNetwork) = keys(graph.vertexmap)
 edges(graph::IncidentNetwork) = keys(graph.edgemap)
 
+all_vertices(graph::IncidentNetwork) = keys(graph.vertexmap)
+all_edges(graph::IncidentNetwork) = keys(graph.edgemap)
+
 # TODO should we copy the sets to avoid accidental mutation?
 edge_incidents(graph::IncidentNetwork, e) = graph.edgemap[e]
 vertex_incidents(graph::IncidentNetwork, v) = graph.vertexmap[v]
