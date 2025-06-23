@@ -54,7 +54,18 @@ function all_edges end
 function vertex end
 function edge end
 
+"""
+    edge_incidents(graph, e)
+
+Returns the vertices connected by edge `e` in `graph`.
+"""
 function edge_incidents end
+
+"""
+    vertex_incidents(graph, v)
+
+Returns the edges connected to vertex `v` in `graph`.
+"""
 function vertex_incidents end
 
 function vertex_at end
@@ -63,13 +74,46 @@ function edge_at end
 :(Base.copy)
 
 # query methods with default implementation
+"""
+    vertex_type(graph)
+
+Returns the type of vertices in the `graph`. Defaults to `Any`.
+"""
 function vertex_type end
+
+"""
+    edge_type(graph)
+
+Returns the type of edges in the `graph`. Defaults to `Any`.
+"""
 function edge_type end
 
+"""
+    hasvertex(graph, v)
+
+Returns `true` if vertex `v` exists in the `graph`.
+"""
 function hasvertex end
+
+"""
+    hasedge(graph, e)
+
+Returns `true` if edge `e` exists in the `graph`.
+"""
 function hasedge end
 
+"""
+    nvertices(graph)
+
+Returns the number of vertices in the `graph`.
+"""
 function nvertices end
+
+"""
+    nedges(graph)
+
+Returns the number of edges in the `graph`.
+"""
 function nedges end
 
 function edges_set_strand end
@@ -77,12 +121,48 @@ function edges_set_open end
 function edges_set_hyper end
 
 # mutating methods
+"""
+    addvertex!(graph, v)
+
+Adds vertex `v` to the `graph`.
+"""
 function addvertex! end
+
+"""
+    addedge!(graph, e)
+
+Adds edge `e` to the `graph`.
+"""
 function addedge! end
+
+"""
+    rmvertex!(graph, v)
+
+Removes vertex `v` from the `graph`.
+"""
 function rmvertex! end
+
+"""
+    rmedge!(graph, e)
+
+Removes edge `e` from the `graph`.
+"""
 function rmedge! end
+
+"""
+    link!(graph, v, e)
+
+Links vertex `v` with edge `e` in the `graph`.
+"""
 function link! end
+
+"""
+    unlink!(graph, v, e)
+
+Unlinks vertex `v` from edge `e` in the `graph`.
+"""
 function unlink! end
+
 function prune_edges! end
 
 # implementation
