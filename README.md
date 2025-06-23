@@ -4,19 +4,83 @@
 [![Documentation: stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://bsc-quantic.github.io/Networks.jl/)
 [![Documentation: dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://bsc-quantic.github.io/Networks.jl/dev/)
 
-Networks.jl is an work-in-progress proposal for an alternative graph interface in Julia.
-It is a product of my frustations developing custom graph-like types on top of Graphs.jl.
-While performant, Graphs.jl has several limitations:
+Networks.jl is a work-in-progress, alternative graph library in Julia. Designed to overcome the limitations of [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl) when custom graphs, hyperedges, multi-edges, or arbitrary vertex types are needed.
 
-- No support for hyper-edges, open-edges or multi-edges.
-- No easy way for delegation on custom graph types (user needs to reimplement the API).
-- Vertices must always be of `Integer` type.
-- Basic `SimpleGraph` implementation doesn't keep vertex ids when deleting a vertex.
+## Motivation
 
-While experimenting with Tenet.jl, I came to the conclusion that the problem is in the fundamental design and that a package on top of the `AbstractGraph` interface won't remedy it.
-Networks.jl tries to fix these design issues
+During the development of [Tenet.jl](https://github.com/bsc-quantic/Tenet.jl), several requirements arose that are not covered by [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl):
 
-1. Like networkx, almost any object should be able to be used as a vertex.
-2. Use new interfaces for new functionalities.
-3. Automatic delegation of interface implementations.
-4. No reliance on trait or interface packages.
+- Support for hyperedges, open edges, and multi-edges
+- Graph types based on the incidence matrix
+- Automatic method delegation for wrapping graph types, based on [DelegatorTraits.jl](https://github.com/bsc-quantic/DelegatorTraits.jl)
+- Vertices of any type, not just `Integer`s
+- Interfaces that are extensible and better decoupled from concrete implementations
+
+### The Edge entity
+
+One of the biggest differences between the `AbstractGraph` and `Network` interfaces is that for `Network`, an edge is its own entity; i.e. an edge can be just an identifier like a UUID instead of a relation between two other objects.
+
+This choice makes a `Network` a more abstract interface than `AbstractGraph`, where the description of a graph is not forced to be based on adjacency matrices.
+
+## Basic Example
+
+Let's start by creating an `IncidentNetwork`, which implements a `Network` using a incidence matrix representation.
+The first type parameterizes the vertex type, while the second one parameterizes the edge type.
+
+```julia
+julia> g = IncidentNetwork{Symbol, Int}();
+
+julia> vertex_type(g)
+Symbol
+
+julia> edge_type(g)
+Int64
+```
+
+Unlike [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl), you must explicitly pass the vertex to add it to a network.
+
+```julia
+julia> addvertex!(g, :a);
+
+julia> addvertex!(g, :b);
+
+julia> addvertex!(g, :c);
+
+julia> vertices(g)
+KeySet for a Dict{Symbol, Set{Int64}} with 3 entries. Keys:
+  :a
+  :b
+  :c
+```
+
+Edges are independent entities in an `IncidentNetwork`, so you must add it and then relate it to the vertices.
+
+```julia
+julia> addedge!(g, 1);
+
+julia> edges(g)
+KeySet for a Dict{Int64, Set{Symbol}} with 1 entry. Keys:
+  1
+
+julia> Networks.link!(g, :a, 1);
+julia> Networks.link!(g, :b, 1);
+julia> Networks.link!(g, :c, 1);
+```
+
+In order to query the vertices connected by an edge, use `edge_incidents`:
+
+```julia
+julia> edge_incidents(g, 1)
+Set{Symbol} with 3 elements:
+  :a
+  :b
+  :c
+```
+
+... and to query the edges connected to a vertex, use `edge_incidents`:
+
+```julia
+julia> vertex_incidents(g, :a)
+Set{Int64} with 1 element:
+  1
+```

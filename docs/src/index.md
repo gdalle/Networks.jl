@@ -1,10 +1,10 @@
 # Networks.jl
 
-Networks.jl is a work-in-progress, alternative graph library in Julia. Designed to overcome the limitations of Graphs.jl when custom graphs, hyperedges, multi-edges, or arbitrary vertex types are needed.
+Networks.jl is a work-in-progress, alternative graph library in Julia. Designed to overcome the limitations of [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl) when custom graphs, hyperedges, multi-edges, or arbitrary vertex types are needed.
 
 ## Motivation
 
-During the development of [Tenet.jl](https://github.com/bsc-quantic/Tenet.jl), several requirements arose that are not covered by Graphs.jl:
+During the development of [Tenet.jl](https://github.com/bsc-quantic/Tenet.jl), several requirements arose that are not covered by [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl):
 
 - Support for hyperedges, open edges, and multi-edges
 - Graph types based on the incidence matrix
@@ -33,11 +33,12 @@ vertex_type(g)
 edge_type(g)
 ```
 
-Unlike Graphs.jl, you must explicitly pass the vertex to add it to a network.
+Unlike [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl), you must explicitly pass the vertex to add it to a network.
 
 ```@repl example
 addvertex!(g, :a)
 addvertex!(g, :b)
+addvertex!(g, :c)
 vertices(g)
 ```
 
@@ -49,6 +50,7 @@ edges(g)
 
 Networks.link!(g, :a, 1)
 Networks.link!(g, :b, 1)
+Networks.link!(g, :c, 1)
 ```
 
 In order to query the vertices connected by an edge, use `edge_incidents`:
