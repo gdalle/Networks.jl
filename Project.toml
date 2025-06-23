@@ -8,3 +8,4 @@ DelegatorTraits = "d83dbd90-3e00-4b33-84f1-398adcf3b35e"
 
 [compat]
 DelegatorTraits = "0.1.2"
+julia = "1.10"
