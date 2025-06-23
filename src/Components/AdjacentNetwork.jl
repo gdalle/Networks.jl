@@ -11,10 +11,13 @@ end
 A network represented as an adjacency list.
 It is the translation of `SimpleGraph` from Graphs.jl to the [`Network`](@ref) interface.
 """
-struct AdjacentNetwork{T<:Integer} <: AbstractNetwork
+mutable struct AdjacentNetwork{T<:Integer} <: AbstractNetwork
     fadjlist::Vector{Vector{T}}
     ne::Int
 end
+
+AdjacentNetwork{T}() where {T} = AdjacentNetwork{T}(Vector{Vector{T}}(), 0)
+AdjacentNetwork{T}(n::Integer) where {T} = AdjacentNetwork{T}([T[] for _ in 1:n], 0)
 
 Base.copy(g::AdjacentNetwork) = AdjacentNetwork(copy.(g.fadjlist), g.ne)
 
@@ -39,6 +42,59 @@ nedges(g::AdjacentNetwork) = g.ne
 edges_set_strand(::AdjacentNetwork{T}) where {T} = SimpleEdge{T}[]
 edges_set_open(::AdjacentNetwork{T}) where {T} = SimpleEdge{T}[]
 edges_set_hyper(::AdjacentNetwork{T}) where {T} = SimpleEdge{T}[]
+
+function addvertex!(g::AdjacentNetwork)
+    n = nvertices(g) + 1
+    push!(g.fadjlist, Vector{vertex_type(g)}())
+    return n
+end
+
+function addedge!(g::AdjacentNetwork, e::SimpleEdge)
+    a, b = e.v1, e.v2
+    @assert a ∈ vertices(g)
+    @assert b ∈ vertices(g)
+
+    if !hasedge(g, e)
+        push!(g.fadjlist[a], b)
+        push!(g.fadjlist[b], a)
+        g.ne += 1
+    end
+
+    return e
+end
+
+function addedge!(g::AdjacentNetwork, u, v)
+    e = SimpleEdge(u, v)
+    return addedge!(g, e)
+end
+
+function rmvertex!(g::AdjacentNetwork, v)
+    @assert hasvertex(g, v)
+
+    # Update the adjacency lists of other vertices
+    for (i, irow) in enumerate(g.fadjlist)
+        filter!(!=(v), irow)
+        irow .= -1
+    end
+
+    # Remove the vertex from the adjacency list
+    deleteat!(g.fadjlist, v)
+
+    return v
+end
+
+function rmedge!(g::AdjacentNetwork, e::SimpleEdge)
+    @assert hasedge(g, e)
+    a, b = e.v1, e.v2
+
+    if hasedge(g, e)
+        filter!(!=(b), g.fadjlist[a])
+        filter!(!=(a), g.fadjlist[b])
+        g.ne -= 1
+    end
+
+    return e
+end
 
 Base.@propagate_inbounds fadj(g::AdjacentNetwork) = g.fadjlist
 Base.@propagate_inbounds fadj(g::AdjacentNetwork, u) = g.fadjlist[u]
