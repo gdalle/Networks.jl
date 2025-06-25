@@ -80,7 +80,7 @@ Set{Symbol} with 3 elements:
   :c
 ```
 
-... and to query the edges connected to a vertex, use `edge_incidents`:
+... and to query the edges connected to a vertex, use `vertex_incidents`:
 
 ```julia
 julia> vertex_incidents(g, :a)
