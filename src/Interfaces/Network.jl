@@ -71,8 +71,6 @@ function vertex_incidents end
 function vertex_at end
 function edge_at end
 
-:(Base.copy)
-
 # query methods with default implementation
 """
     vertex_type(graph)
