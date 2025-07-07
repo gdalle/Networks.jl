@@ -13,12 +13,14 @@ Using [`DelegatorTraits.jl`](https://github.com/bsc-quantic/DelegatorTraits.jl) 
 The `Network` interface abstracts a network or graph as a bipartite graph whose sets are the vertices and the edges.
 A type implementing the `Network` interface must implement the following methods:
 
-| Required method          | Description                                |
-| :----------------------- | :----------------------------------------- |
-| `all_vertices(g)`        | Returns the list of vertices               |
-| `all_edges(g)`           | Returns the list of edges                  |
-| `edge_incidents(g, e)`   | Returns the vertices connected by edge `e` |
-| `vertex_incidents(g, v)` | Returns the edges conected to vertex `v`   |
+| Required method          | Description                                 |
+| :----------------------- | :------------------------------------------ |
+| `all_vertices(g)`        | Returns the list of vertices                |
+| `all_edges(g)`           | Returns the list of edges                   |
+| `edge_incidents(g, e)`   | Returns the vertices connected by edge `e`  |
+| `vertex_incidents(g, v)` | Returns the edges conected to vertex `v`    |
+| `vertex_neighbors(g, v)` | Returns the vertices neighboring vertex `v` |
+| `edge_neighbors(g, e)`   | Returns the edges neighboring edge `e`      |
 
 ### Optional methods
 
